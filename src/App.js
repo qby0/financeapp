@@ -6,18 +6,19 @@ import Hero from './components/Hero';
 import FinanceSection from './components/FinanceSection';
 import SignUpModal from './components/SignUpModal';
 import LoginModal from './components/LoginModal';
-import LearnMoreModal from './components/LearnMoreModal'; // Импортируем модальное окно Learn More
-import UserGuideModal from './components/UserGuideModal'; // Импортируем модальное окно User Guide
+import LearnMoreModal from './components/LearnMoreModal';
+import UserGuideModal from './components/UserGuideModal';
 import Footer from './components/Footer';
-import FinanceOverview from './components/FinanceOverview'; 
+import FinanceOverview from './components/FinanceOverview';
 import FeaturesSection from './components/FeaturesSection';
 import FAQSection from './components/FAQSection';
 import ContactSection from './components/ContactSection';
 import Dashboard from './components/Dashboard';
-import ContactModal from './components/ContactModal'; // Импортируем ContactModal
-import { auth, readData } from './components/firebase'; // Firebase authentication и readData
+import ContactModal from './components/ContactModal'; // Contact Modal
+import { auth, readData } from './components/firebase'; // Firebase authentication и данные пользователя
 import LoadingScreen from './components/LoadingScreen'; // Заглушка при загрузке
 
+// Компонент домашней страницы
 const HomePage = ({ onSignUpClick, onLearnMoreClick, onContactClick, onUserGuideClick }) => (
   <>
     <Hero />
@@ -25,102 +26,98 @@ const HomePage = ({ onSignUpClick, onLearnMoreClick, onContactClick, onUserGuide
     <FinanceOverview />
     <FeaturesSection />
     <FAQSection />
-    <ContactSection /> 
-    <Footer onSignUpClick={onSignUpClick} onContactClick={onContactClick} onUserGuideClick={onUserGuideClick} /> {/* Передаем функцию для открытия модальных окон */}
+    <ContactSection />
+    <Footer onSignUpClick={onSignUpClick} onContactClick={onContactClick} onUserGuideClick={onUserGuideClick} />
   </>
 );
 
 const App = () => {
-  const [isSignUpOpen, setIsSignUpOpen] = useState(false);
-  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isSignUpOpen, setIsSignUpOpen] = useState(false); // Состояние для модального окна регистрации
+  const [isLoginOpen, setIsLoginOpen] = useState(false); // Состояние для модального окна входа
   const [isLearnMoreOpen, setIsLearnMoreOpen] = useState(false); // Состояние для Learn More
   const [isContactOpen, setIsContactOpen] = useState(false); // Состояние для ContactModal
   const [isUserGuideOpen, setIsUserGuideOpen] = useState(false); // Состояние для User Guide
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(null); // Данные пользователя
   const [loading, setLoading] = useState(true); // Состояние загрузки
   const navigate = useNavigate();
 
+  // Эффект для проверки аутентификации при загрузке
   useEffect(() => {
-    // Проверка состояния аутентификации при загрузке приложения
     const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
       if (authUser) {
-        // Получаем данные пользователя из Firebase
         const userData = await readData(authUser.uid); 
-        setUser({ ...authUser, ...userData }); // Объединяем данные Firebase auth и данные пользователя
-        navigate('/dashboard'); // Перенаправляем на Dashboard, если пользователь залогинен
+        setUser({ ...authUser, ...userData });
+        navigate('/dashboard'); // Перенаправляем залогиненного пользователя на Dashboard
       } else {
-        setUser(null); // Если пользователь не залогинен
+        setUser(null);
       }
-      setLoading(false); // Завершаем загрузку
+      setLoading(false); // Отключаем режим загрузки
     });
-
-    return () => unsubscribe(); // Отписываемся от listener при размонтировании компонента
+    return () => unsubscribe();
   }, [navigate]);
 
-  const handleSignUpClick = () => {
-    setIsSignUpOpen(true); // Открыть модальное окно регистрации
-  };
+  // Функции для открытия модальных окон
+  const handleSignUpClick = () => setIsSignUpOpen(true);
+  const handleLoginClick = () => setIsLoginOpen(true);
+  const handleLearnMoreClick = () => setIsLearnMoreOpen(true);
+  const handleContactClick = () => setIsContactOpen(true);
+  const handleUserGuideClick = () => setIsUserGuideOpen(true);
 
-  const handleLoginClick = () => {
-    setIsLoginOpen(true); // Открыть модальное окно входа
-  };
-
-  const handleLearnMoreClick = () => {
-    setIsLearnMoreOpen(true); // Открыть модальное окно Learn More
-  };
-
-  const handleContactClick = () => {
-    setIsContactOpen(true); // Открыть модальное окно контакта
-  };
-
-  const handleUserGuideClick = () => {
-    setIsUserGuideOpen(true); // Открыть модальное окно User Guide
-  };
-
+  // Функция для закрытия всех модальных окон
   const handleCloseModal = () => {
-    setIsSignUpOpen(false); // Закрыть модальное окно регистрации
-    setIsLoginOpen(false); // Закрыть модальное окно входа
-    setIsLearnMoreOpen(false); // Закрыть модальное окно Learn More
-    setIsContactOpen(false); // Закрыть модальное окно контакта
-    setIsUserGuideOpen(false); // Закрыть модальное окно User Guide
+    setIsSignUpOpen(false);
+    setIsLoginOpen(false);
+    setIsLearnMoreOpen(false);
+    setIsContactOpen(false);
+    setIsUserGuideOpen(false);
   };
 
+  // Логаут пользователя
   const handleLogout = async () => {
     try {
-      await auth.signOut(); // Выход из Firebase
-      setUser(null); // Очищаем данные пользователя
-      navigate('/'); // Перенаправляем на главную страницу
+      await auth.signOut();
+      setUser(null);
+      navigate('/');
     } catch (error) {
       console.error('Error logging out:', error);
     }
   };
 
-  const handleLoginSuccess = (userData) => {
-    setUser(userData); // Устанавливаем данные пользователя после успешного входа
-  };
+  // Обработка успешного входа пользователя
+  const handleLoginSuccess = (userData) => setUser(userData);
 
-  // Если идет проверка состояния пользователя, отображаем заглушку
-  if (loading) {
-    return <LoadingScreen />;
-  }
+  // Если идет проверка состояния пользователя, показываем экран загрузки
+  if (loading) return <LoadingScreen />;
 
   return (
     <div className="App">
-      <Navbar 
-        user={user} 
-        onSignUpClick={handleSignUpClick} 
-        onLoginClick={handleLoginClick} 
-        onLogoutClick={handleLogout} 
+      <Navbar
+        user={user}
+        onSignUpClick={handleSignUpClick}
+        onLoginClick={handleLoginClick}
+        onLogoutClick={handleLogout}
       />
       <Routes>
-        <Route path="/" element={<HomePage onSignUpClick={handleSignUpClick} onLearnMoreClick={handleLearnMoreClick} onContactClick={handleContactClick} onUserGuideClick={handleUserGuideClick} />} /> {/* Передаем функцию открытия окна Learn More и Contact */}
+        <Route
+          path="/"
+          element={
+            <HomePage
+              onSignUpClick={handleSignUpClick}
+              onLearnMoreClick={handleLearnMoreClick}
+              onContactClick={handleContactClick}
+              onUserGuideClick={handleUserGuideClick}
+            />
+          }
+        />
         <Route path="/dashboard" element={<Dashboard user={user} />} />
       </Routes>
+
+      {/* Модальные окна */}
       <SignUpModal isOpen={isSignUpOpen} onClose={handleCloseModal} />
       <LoginModal isOpen={isLoginOpen} onClose={handleCloseModal} onLoginSuccess={handleLoginSuccess} />
-      <LearnMoreModal isOpen={isLearnMoreOpen} onClose={handleCloseModal} /> {/* Добавляем модальное окно Learn More */}
-      <ContactModal isOpen={isContactOpen} onClose={handleCloseModal} /> {/* Добавляем модальное окно контакта */}
-      <UserGuideModal isOpen={isUserGuideOpen} onClose={handleCloseModal} /> {/* Добавляем модальное окно User Guide */}
+      <LearnMoreModal isOpen={isLearnMoreOpen} onClose={handleCloseModal} />
+      <ContactModal isOpen={isContactOpen} onClose={handleCloseModal} />
+      <UserGuideModal isOpen={isUserGuideOpen} onClose={handleCloseModal} />
     </div>
   );
 };
