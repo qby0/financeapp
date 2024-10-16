@@ -1,38 +1,56 @@
-import React, { useState } from 'react';
-import emailjs from '@emailjs/browser'; // Импортируем новую версию EmailJS
-import './ContactModal.css'; // Стили для модального окна
+import React, { useState, useEffect } from 'react';
+import './ContactModal.css';
 
 const ContactModal = ({ isOpen, onClose }) => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: ''
-  });
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const [formStatus, setFormStatus] = useState(null); // Status of the form submission
 
-  const [formStatus, setFormStatus] = useState(null); // Для отображения статуса отправки
+  // Clear form fields when the modal is opened
+  useEffect(() => {
+    if (isOpen) {
+      setName('');
+      setEmail('');
+      setMessage('');
+      setFormStatus(null); // Reset status when modal is opened
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Настроенные параметры для EmailJS
-    emailjs
-      .send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', formData, 'YOUR_USER_ID')
-      .then(
-        (response) => {
+    // Basin form endpoint
+    const formEndpoint = 'https://usebasin.com/f/41da43d0729f'; // Используйте ваш уникальный Basin endpoint
+
+    // Отправка данных на Basin через fetch
+    fetch(formEndpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: name,
+        email: email,
+        message: message,
+      }),
+    })
+      .then((response) => {
+        if (response.ok) {
           setFormStatus('Message sent successfully!');
-          setFormData({ name: '', email: '', message: '' });
-        },
-        (error) => {
+          setName('');  // Clear name input
+          setEmail(''); // Clear email input
+          setMessage(''); // Clear message input
+        } else {
           setFormStatus('Failed to send message.');
         }
-      );
+      })
+      .catch((error) => {
+        console.error('Error sending message:', error);
+        setFormStatus('Failed to send message.');
+      });
   };
 
   return (
@@ -44,23 +62,23 @@ const ContactModal = ({ isOpen, onClose }) => {
             type="text"
             name="name"
             placeholder="Your Name"
-            value={formData.name}
-            onChange={handleChange}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             required
           />
           <input
             type="email"
             name="email"
             placeholder="Your Email"
-            value={formData.email}
-            onChange={handleChange}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
           <textarea
             name="message"
             placeholder="Your Message"
-            value={formData.message}
-            onChange={handleChange}
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
             required
           ></textarea>
           <div className="buttons">
@@ -68,7 +86,7 @@ const ContactModal = ({ isOpen, onClose }) => {
             <button type="button" onClick={onClose} className="close-btn">Close</button>
           </div>
         </form>
-        {formStatus && <p>{formStatus}</p>}
+        {formStatus && <p>{formStatus}</p>} {/* Display success/error message */}
       </div>
     </div>
   );
