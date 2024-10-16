@@ -1,0 +1,65 @@
+.faq-section {
+    background-color: #111010;
+    color: #bdb4b4;
+    padding: 60px 20px;
+    display: flex;
+    justify-content: space-between;
+    gap: 60px; /* Расстояние между блоками */
+    max-width: 1200px; /* Ограничение по ширине */
+    margin: 0 auto; /* Центрирование по горизонтали */
+}
+
+.faq-left {
+    max-width: 300px;
+}
+
+.faq-left h1 {
+    font-size: 45px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.faq-left p {
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+.contact-btn {
+    padding: 8px 18px; /* Уменьшенные отступы внутри кнопок */
+    border: 1px solid #FF1493;
+    color: #fff;
+    background-color: transparent;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 150px; /* Одинаковая ширина для обеих кнопок */
+    text-align: center;
+    display: inline-block;
+}
+
+/* Hover эффект для кнопки */
+.contact-btn:hover {
+    background-color: #FF1493; /* Розовый фон при наведении */
+    color: #fff; /* Белый текст при наведении */
+    border-color: #FF1493; /* Граница розового цвета при наведении */
+    box-shadow: 0 0 10px #FF1493; /* Добавление светящегося эффекта */
+}
+
+.faq-right {
+    max-width: 700px;
+}
+
+.faq-item {
+    margin-bottom: 40px;
+}
+
+.faq-item h3 {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.faq-item p {
+    font-size: 16px;
+    line-height: 1.5;
+}

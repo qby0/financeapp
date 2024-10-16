@@ -1,0 +1,57 @@
+.contact-section {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 40px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #111010; /* Черный фон */
+    color: #bdb4b4;
+}
+
+.contact-section img {
+    max-width: 50px; /* Максимальная ширина иконки */
+    height: 50px;    /* Фиксированная высота */
+    object-fit: contain; /* Сохраняет пропорции изображений */
+    margin: 0 auto; /* Центрируем иконки */
+    display: block;
+}
+
+  
+  .contact-item {
+    text-align: center;
+    width: 30%;
+  }
+  
+  .contact-icon {
+    margin-bottom: 15px;
+  }
+  
+  .contact-icon img {
+    height: 40px; /* Размер иконки */
+    width: auto;
+    
+  }
+  
+  .contact-info h3 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #bdb4b4;
+  }
+  
+  .contact-info p {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+  
+  .contact-info a {
+    color: #FF1493;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .contact-info a:hover {
+    text-decoration: underline;
+  }
+  

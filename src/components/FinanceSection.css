@@ -1,0 +1,74 @@
+.finance-section {
+    background-color: #111010; /* Черный фон */
+    color: #bdb4b4; /* Белый текст */
+    padding: 20px 10px; /* Уменьшенные отступы вокруг секции */
+    text-align: center; /* Центрирование текста */
+}
+
+.finance-content {
+    max-width: 800px; /* Ограничиваем ширину контента */
+    margin: 0 auto; /* Центрируем по горизонтали */
+    padding-bottom: 20px; /* Уменьшаем отступ снизу для кнопок */
+}
+
+.finance-content h2 {
+    font-size: 40px; /* Уменьшаем размер заголовка */
+    font-weight: bold; /* Жирный текст */
+    margin-bottom: 15px; /* Уменьшаем отступ под заголовком */
+}
+
+.finance-content p {
+    font-size: 18px; /* Немного уменьшаем размер текста */
+    margin-bottom: 20px; /* Уменьшаем отступ под текстом */
+}
+
+.finance-buttons {
+    display: flex;
+    justify-content: center; /* Центрируем кнопки */
+    gap: 15px; /* Уменьшаем расстояние между кнопками */
+    margin-bottom: 20px; /* Уменьшаем отступ снизу */
+}
+
+/* Общие стили для кнопок */
+.signup-btn, .learn-more-btn {
+    padding: 8px 18px; /* Уменьшенные отступы внутри кнопок */
+    border: 1px solid #FF1493;
+    color: #fff;
+    background-color: transparent;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 150px; /* Одинаковая ширина для обеих кнопок */
+    text-align: center;
+    display: inline-block;
+}
+
+/* Стиль для кнопки Sign Up */
+.signup-btn {
+    background-color: #FF1493;
+    border: none;
+}
+
+/* Hover эффект для кнопки Sign Up */
+.signup-btn:hover {
+    background-color: #ff66b2;
+    box-shadow: 0 0 10px #FF1493; /* Эффект свечения при наведении */
+}
+
+/* Hover эффект для кнопки Learn More */
+.learn-more-btn:hover {
+    background-color: #FF1493;
+    color: #fff; /* Цвет текста белый при наведении */
+    border-color: #FF1493;
+    box-shadow: 0 0 10px #FF1493; /* Эффект свечения при наведении */
+}
+
+.finance-image {
+    margin-top: 30px; /* Уменьшаем отступ сверху для изображения */
+    text-align: center; /* Центрирование изображения */
+}
+
+.finance-image img {
+    max-width: 100%; /* Изображение масштабируется по ширине контейнера */
+    height: auto; /* Пропорции сохраняются */
+}

@@ -1,0 +1,56 @@
+.features-section {
+  background-color: #111010; /* Черный фон */
+  color: #bdb4b4; /* Белый текст */
+  padding: 40px 20px; /* Отступы вокруг секции */
+  max-width: 1200px; /* Ограничение ширины контента */
+  margin: 0 auto; /* Центрируем блок по горизонтали */
+  }
+  
+  .features-header {
+    padding-bottom: 40px; /* Отступ снизу */
+    text-align: center; /* Выравнивание заголовка и текста по левому краю */
+  }
+  
+  .features-header h2 {
+    font-size: 45px; /* Размер заголовка */
+    font-weight: bold; /* Жирный текст */
+    margin-bottom: 20px; /* Отступ под заголовком */
+    text-align: center; /* Выравнивание заголовка по левому краю */
+  }
+  
+  .features-header p {
+    font-size: 20px; /* Размер текста */
+    margin-bottom: 30px; /* Отступ под текстом */
+    text-align: center; /* Выравнивание текста по левому краю */
+  }
+  
+  .track-label {
+    font-size: 14px; /* Устанавливаем маленький размер шрифта для дополнительной метки */
+    color: #bdb4b4; /* Устанавливаем светлый цвет для метки */
+    margin-bottom: 5px; /* Отступ под меткой */
+  }
+  
+  .features-grid {
+    display: flex;
+    justify-content: space-between; /* Выравниваем элементы по краям */
+    gap: 50px;
+    margin-bottom: 40px;
+  }
+  
+  .feature-item {
+    max-width: 300px; /* Ограничиваем максимальную ширину каждого элемента сетки */
+    text-align: left; /* Выравнивание текста внутри элемента по левому краю */
+  }
+  
+  .feature-item h3 {
+    font-size: 22px; /* Устанавливаем размер шрифта для заголовков элементов */
+    font-weight: bold; /* Делаем текст заголовков жирным */
+    color: #FF1493; /* Устанавливаем розовый цвет для заголовков */
+    margin-bottom: 15px; /* Отступ снизу под заголовком */
+  }
+  
+  .feature-item p {
+    font-size: 16px; /* Устанавливаем размер текста для параграфов внутри элементов */
+    line-height: 1.5; /* Устанавливаем межстрочный интервал для улучшения читабельности */
+  }
+  

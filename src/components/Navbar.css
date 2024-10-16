@@ -1,0 +1,137 @@
+/* Стили для логотипа */
+.logo-image {
+  height: 50px; 
+  width: auto;  
+  pointer-events: none
+}
+
+/* Навбар */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #000;
+  padding: 10px 90px;
+}
+
+.navbar-links {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+}
+
+.navbar-links a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 16px;
+  transition: color 0.3s ease; /* Плавный переход цвета */
+}
+
+/* Розовый цвет текста при наведении */
+.navbar-links a:hover {
+  color: #FF1493; 
+}
+
+/* Стили кнопок */
+.navbar-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+/* Стили для кнопки "Sign Up" */
+.signup-btn {
+  padding: 10px 20px;
+  border: 1px solid #FF1493;
+  color: #fff;
+  background-color: transparent;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 150px;
+  text-align: center;
+  display: inline-block;
+  box-shadow: 0 0 10px 2px #FF1493; /* Постоянное свечение */
+  animation: glow 1.5s infinite alternate; /* Анимация свечения */
+}
+
+/* Стиль при наведении мышки для кнопки Sign Up */
+.signup-btn:hover {
+  background-color: #FF1493;
+  color: #fff;
+  border-color: #FF1493;
+  box-shadow: 0 0 10px 5px #FF1493;
+}
+
+/* Стили для кнопки "Login" */
+.login-btn {
+  padding: 10px 20px;
+  border: 1px solid #FF1493;
+  color: #fff;
+  background-color: transparent;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 150px;
+  text-align: center;
+  display: inline-block;
+}
+
+/* Стиль при наведении мышки для кнопки Login */
+.login-btn:hover {
+  background-color: #FF1493;
+  color: #fff;
+  border-color: #FF1493;
+  box-shadow: 0 0 10px 5px #FF1493;
+}
+
+/* Стили для кнопки "Logout" */
+.logout-btn {
+  padding: 10px 20px;
+  border: 1px solid #FF1493; /* Розовая граница */
+  color: #fff;
+  background-color: #FF1493; /* Розовый фон */
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 150px;
+  text-align: center;
+  display: inline-block;
+ 
+}
+
+/* Стиль при наведении мышки для кнопки Logout */
+.logout-btn:hover {
+  background-color: #FF69B4; /* Более яркий оттенок розового при наведении */
+  color: #fff;
+  border-color: #FF69B4;
+  box-shadow: 0 0 10px 5px #FF1493;
+}
+
+/* Стили для никнейма пользователя */
+.navbar-nickname {
+  padding: 5px 10px; /* Отступы внутри элемента */
+  color: #fff;
+  font-size: 14px; /* Оптимальный размер шрифта */
+  font-weight: bold;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background-color: transparent;
+  transition: all 0.3s ease;
+  position: relative;
+  box-shadow: 0 0 10px 2px #FF1493;
+  animation: glow 1.5s infinite alternate; /* Анимация свечения */
+ 
+}
+
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 3px 1px #FF1493, 0 0 5px 2px #FF1493, 0 0 8px 3px #FF1493; /* Начальная тень */
+  }
+  50% {
+    box-shadow: 0 0 6px 2px #FF69B4, 0 0 10px 3px #FF69B4, 0 0 12px 4px #FF69B4; /* Средний "миг" */
+  }
+  100% {
+    box-shadow: 0 0 3px 1px #FF1493, 0 0 5px 2px #FF1493, 0 0 8px 3px #FF1493; /* Возвращение к начальной тени */
+  }
+}
+

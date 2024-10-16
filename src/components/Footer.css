@@ -1,0 +1,79 @@
+/* Основные стили футера */
+.footer {
+    background-color: #000;
+    color: #bdb4b4;
+    padding: 40px 20px;
+    text-align: center; /* Центрирование текста */
+}
+
+/* Верхняя часть футера: логотип, навигация и соцсети */
+.footer-top {
+    display: flex;
+    justify-content: center; /* Центрирование содержимого */
+    align-items: center;
+    gap: 40px; /* Пространство между элементами */
+    margin-bottom: 20px;
+}
+
+.footer-logo img {
+    height: 50px;
+    width: auto;
+}
+
+/* Навигационные ссылки */
+.footer-links {
+    display: flex;
+    gap: 20px;
+}
+
+.footer-links a {
+    color: #bdb4b4;
+    text-decoration: none;
+    font-size: 16px;
+    transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: #FF1493; /* Розовый цвет при наведении */
+}
+
+/* Социальные иконки */
+.social-icons a img {
+    height: 25px;
+    width: auto;
+    margin-left: 15px;
+    transition: opacity 0.3s ease;
+}
+
+.social-icons a img:hover {
+    opacity: 0.7; /* Эффект при наведении */
+}
+
+/* Нижняя часть футера: авторские права и политики */
+.footer-bottom {
+    display: flex;
+    justify-content: center; /* Центрирование элементов */
+    gap: 40px; /* Пространство между текстом и ссылками */
+    margin-top: 20px;
+    border-top: 1px solid #444; /* Разделительная линия */
+    padding-top: 20px;
+}
+
+.footer-bottom p {
+    margin: 0;
+}
+
+.footer-policies {
+    display: flex;
+    gap: 20px;
+}
+
+.footer-policies a {
+    color: #bdb4b4;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.footer-policies a:hover {
+    color: #FF1493; /* Розовый цвет при наведении */
+}
