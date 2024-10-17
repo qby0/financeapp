@@ -14,11 +14,11 @@ import FeaturesSection from './components/FeaturesSection';
 import FAQSection from './components/FAQSection';
 import ContactSection from './components/ContactSection';
 import Dashboard from './components/Dashboard';
-import ContactModal from './components/ContactModal'; // Contact Modal
-import { auth, readData } from './components/firebase'; // Firebase authentication и данные пользователя
-import LoadingScreen from './components/LoadingScreen'; // Заглушка при загрузке
+import ContactModal from './components/ContactModal';
+import AutoCloseModal from './components/AutoCloseModal'; // Добавляем AutoCloseModal для невидимого уведомления
+import { auth, readData } from './components/firebase';
+import LoadingScreen from './components/LoadingScreen';
 
-// Компонент домашней страницы
 const HomePage = ({ onSignUpClick, onLearnMoreClick, onContactClick, onUserGuideClick }) => (
   <>
     <Hero />
@@ -32,47 +32,55 @@ const HomePage = ({ onSignUpClick, onLearnMoreClick, onContactClick, onUserGuide
 );
 
 const App = () => {
-  const [isSignUpOpen, setIsSignUpOpen] = useState(false); // Состояние для модального окна регистрации
-  const [isLoginOpen, setIsLoginOpen] = useState(false); // Состояние для модального окна входа
-  const [isLearnMoreOpen, setIsLearnMoreOpen] = useState(false); // Состояние для Learn More
-  const [isContactOpen, setIsContactOpen] = useState(false); // Состояние для ContactModal
-  const [isUserGuideOpen, setIsUserGuideOpen] = useState(false); // Состояние для User Guide
-  const [user, setUser] = useState(null); // Данные пользователя
-  const [loading, setLoading] = useState(true); // Состояние загрузки
+  const [isSignUpOpen, setIsSignUpOpen] = useState(false);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isLearnMoreOpen, setIsLearnMoreOpen] = useState(false);
+  const [isContactOpen, setIsContactOpen] = useState(false);
+  const [isUserGuideOpen, setIsUserGuideOpen] = useState(false);
+  const [isAutoCloseModalOpen, setIsAutoCloseModalOpen] = useState(false); // Состояние для AutoCloseModal
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [autoCloseMessage, setAutoCloseMessage] = useState(''); // Сообщение для AutoCloseModal
   const navigate = useNavigate();
 
-  // Эффект для проверки аутентификации при загрузке
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
       if (authUser) {
-        const userData = await readData(authUser.uid); 
+        if (!authUser.emailVerified) {
+          setAutoCloseMessage('Please verify your email before accessing the PennyWise project');
+          setIsAutoCloseModalOpen(true); // Показываем сообщение на 4 секунды
+          await auth.signOut();
+          setUser(null);
+          navigate('/');
+          return;
+        }
+        const userData = await readData(authUser.uid);
         setUser({ ...authUser, ...userData });
-        navigate('/dashboard'); // Перенаправляем залогиненного пользователя на Dashboard
+        navigate('/dashboard');
       } else {
         setUser(null);
+        navigate('/');
       }
-      setLoading(false); // Отключаем режим загрузки
+      setLoading(false);
     });
     return () => unsubscribe();
   }, [navigate]);
 
-  // Функции для открытия модальных окон
   const handleSignUpClick = () => setIsSignUpOpen(true);
   const handleLoginClick = () => setIsLoginOpen(true);
   const handleLearnMoreClick = () => setIsLearnMoreOpen(true);
   const handleContactClick = () => setIsContactOpen(true);
-  const handleUserGuideClick = () => setIsUserGuideOpen(true);
+  const handleUserGuideClick = () => setIsUserGuideOpen(true); // Убедись, что эта функция используется
 
-  // Функция для закрытия всех модальных окон
   const handleCloseModal = () => {
     setIsSignUpOpen(false);
     setIsLoginOpen(false);
     setIsLearnMoreOpen(false);
     setIsContactOpen(false);
     setIsUserGuideOpen(false);
+    setIsAutoCloseModalOpen(false); // Закрываем AutoCloseModal
   };
 
-  // Логаут пользователя
   const handleLogout = async () => {
     try {
       await auth.signOut();
@@ -83,10 +91,8 @@ const App = () => {
     }
   };
 
-  // Обработка успешного входа пользователя
   const handleLoginSuccess = (userData) => setUser(userData);
 
-  // Если идет проверка состояния пользователя, показываем экран загрузки
   if (loading) return <LoadingScreen />;
 
   return (
@@ -105,19 +111,24 @@ const App = () => {
               onSignUpClick={handleSignUpClick}
               onLearnMoreClick={handleLearnMoreClick}
               onContactClick={handleContactClick}
-              onUserGuideClick={handleUserGuideClick}
+              onUserGuideClick={handleUserGuideClick} // Исправлено использование этой функции
             />
           }
         />
         <Route path="/dashboard" element={<Dashboard user={user} />} />
       </Routes>
 
-      {/* Модальные окна */}
       <SignUpModal isOpen={isSignUpOpen} onClose={handleCloseModal} />
       <LoginModal isOpen={isLoginOpen} onClose={handleCloseModal} onLoginSuccess={handleLoginSuccess} />
       <LearnMoreModal isOpen={isLearnMoreOpen} onClose={handleCloseModal} />
       <ContactModal isOpen={isContactOpen} onClose={handleCloseModal} />
       <UserGuideModal isOpen={isUserGuideOpen} onClose={handleCloseModal} />
+     
+      <AutoCloseModal
+        message={autoCloseMessage}
+        isOpen={isAutoCloseModalOpen}
+        onClose={handleCloseModal}
+      /> {/* Добавляем AutoCloseModal для временного сообщения */}
     </div>
   );
 };
