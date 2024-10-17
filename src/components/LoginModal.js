@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { logIn } from './firebaseAuth';
-import { useNavigate } from 'react-router-dom'; // Импорт useNavigate для редиректа
+import { useNavigate } from 'react-router-dom';
 import './LoginModal.css';
 
 const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
-  const navigate = useNavigate(); // Используем useNavigate для редиректа
+  const navigate = useNavigate(); 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,9 +24,16 @@ const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
   
     try {
       const userData = await logIn(formData.email, formData.password);
+      
+      // Проверка подтверждения email
+      if (!userData.emailVerified) {
+        setError('Please verify your email before accessing the PennyWise project.');
+        return; // Прерываем процесс логина
+      }
+
       console.log('User logged in successfully', userData);
       onLoginSuccess(userData);
-      setFormData({ email: '', password: '' }); // Сброс полей формы
+      setFormData({ email: '', password: '' });
       onClose();
       
       // Перенаправляем на страницу Dashboard
@@ -35,25 +42,23 @@ const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
       // Обработка ошибок
       switch (error.code) {
         case 'auth/invalid-email':
-          setError('The email address is badly formatted.');
-          break;
-        case 'auth/user-not-found':
-          setError('There is no user with this email. Please check the email or sign up.');
-          break;
-        case 'auth/wrong-password':
-          setError('The password is incorrect. Please try again.');
-          break;
-        case 'auth/invalid-credential':
-          setError('Invalid credentials. Please try again.');
-          break;
-        default:
-          setError('Login failed: ' + error.message);
-          break;
+    setError('The email address is badly formatted.');
+    break;
+  case 'auth/user-not-found':
+    setError('There is no user with this email. Please check the email or sign up.');
+    break;
+  case 'auth/wrong-password':
+    setError('The password is incorrect. Please try again.');
+    break;
+  case 'auth/invalid-credential':
+    setError('Invalid credentials. Please try again.');
+    break;
+  default:
+    break;
       }
     }
   };
   
-
   if (!isOpen) return null;
 
   return (
@@ -77,7 +82,6 @@ const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
             onChange={handleChange}
             required
           />
-          {/* Отображение ошибки, если есть */}
           {error && <p className="error">{error}</p>}
           <div className="buttons">
             <button type="submit">Login</button>
