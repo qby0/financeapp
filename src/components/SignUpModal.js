@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { signUp } from './firebaseAuth';  // Импортируем функцию регистрации
-import { writeData } from './firebase';  // Импортируем функцию записи данных
-import './SignUpModal.css';  // Ваш файл CSS для стилизации
+import { signUp } from './firebaseAuth';  // Импорт функции регистрации
+import { writeData } from './firebase';  // Импорт функции записи данных
+import './SignUpModal.css';  // Файл CSS для стилизации
 
-const SignUpModal = ({ isOpen, onClose }) => {
+const SignUpModal = ({ isOpen, onClose, onSignUpSuccess }) => { // Добавлен onSignUpSuccess
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -17,46 +17,40 @@ const SignUpModal = ({ isOpen, onClose }) => {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
-  // Функция для изменения полей формы
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  // Простая проверка валидности email
   const validateEmail = (email) => {
     const re = /\S+@\S+\.\S+/;
     return re.test(email);
   };
 
-  // Обработчик отправки формы
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Проверка совпадения паролей
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       return;
     }
 
-    // Проверка валидности email
     if (!validateEmail(formData.email)) {
       setError('Please enter a valid email address');
       return;
     }
 
-    setError('');  // Сброс ошибок перед регистрацией
+    setError('');
 
     try {
-      // Регистрация пользователя
       const user = await signUp(formData.email, formData.password);
-      console.log('User registered:', user.uid);
-
-      // Запись всех данных пользователя в базу данных
       await writeData(user.uid, formData.firstName, formData.lastName, formData.email, formData.nickname, formData.phone);
-      setSuccessMessage('Registration successful!');
 
-      // Очистка формы после успешной регистрации
+      // Вызов onSignUpSuccess для показа модального окна успеха
+      onSignUpSuccess();
+
+     
+
       setFormData({
         firstName: '',
         lastName: '',
@@ -67,16 +61,15 @@ const SignUpModal = ({ isOpen, onClose }) => {
         confirmPassword: ''
       });
 
-      // Закрываем окно через 3 секунды после успешной регистрации
+      // Закрываем окно через 5 секунд после успешной регистрации
       setTimeout(() => {
         setSuccessMessage('');
         onClose();
-      }, 3000);
+      }, 5000);
     } catch (error) {
-      // Обработка ошибок Firebase
       switch (error.code) {
         case 'auth/email-already-in-use':
-          setError('This email is already in use. Please log in or use another email.');
+          setError('');
           break;
         case 'auth/invalid-email':
           setError('Invalid email format. Please enter a valid email address.');
@@ -85,13 +78,12 @@ const SignUpModal = ({ isOpen, onClose }) => {
           setError('Password is too weak. Please choose a stronger password.');
           break;
         default:
-          setError('Registration failed: ' + error.message);
+          
           break;
       }
     }
   };
 
-  // Если модальное окно не открыто, ничего не отображаем
   if (!isOpen) return null;
 
   return (
