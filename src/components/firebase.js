@@ -17,41 +17,52 @@ const firebaseConfig = {
 // Инициализация Firebase
 const app = initializeApp(firebaseConfig);
 
-// Экспортируем аутентификацию и базу данных для использования в других файлах
+// Экспорт аутентификации и базы данных для использования в других файлах
 export const auth = getAuth(app);
 export const database = getDatabase(app);
 
-// Асинхронная функция для записи данных в базу данных
+/**
+ * Функция для записи данных пользователя в Realtime Database Firebase
+ * @param {string} userId - Идентификатор пользователя (uid)
+ * @param {string} firstName - Имя пользователя
+ * @param {string} lastName - Фамилия пользователя
+ * @param {string} email - Email пользователя
+ * @param {string} nickname - Никнейм пользователя
+ * @param {string} phone - Телефон пользователя
+ */
 export const writeData = async (userId, firstName, lastName, email, nickname, phone) => {
   try {
     await set(ref(database, 'users/' + userId), {
-      firstName: firstName,
-      lastName: lastName,  // Записываем фамилию
-      email: email,
-      nickname: nickname,
-      phone: phone  // Записываем телефон
+      firstName,
+      lastName,
+      email,
+      nickname,
+      phone
     });
-    console.log('Data written successfully');
+    console.log('Данные успешно записаны.');
   } catch (error) {
-    console.error('Error writing data:', error);
+    console.error('Ошибка при записи данных:', error);
   }
 };
 
-// Асинхронная функция для чтения данных из базы данных
+/**
+ * Функция для чтения данных пользователя из Realtime Database Firebase
+ * @param {string} userId - Идентификатор пользователя (uid)
+ * @returns {Object|null} - Данные пользователя или null, если данные отсутствуют
+ */
 export const readData = async (userId) => {
-  const dbRef = ref(database);  // Получаем ссылку на базу данных
+  const dbRef = ref(database); // Ссылка на базу данных
   try {
-    // Получаем данные из базы данных по пути users/{userId}
     const snapshot = await get(child(dbRef, `users/${userId}`));
     if (snapshot.exists()) {
-      console.log('Data fetched for user:', userId);
-      return snapshot.val();  // Возвращаем данные
+      console.log(`Данные для пользователя ${userId} успешно получены.`);
+      return snapshot.val(); // Возвращаем данные пользователя
     } else {
-      console.log("No data available for user:", userId);
-      return null;  // Если данных нет
+      console.log(`Данные для пользователя ${userId} отсутствуют.`);
+      return null;
     }
   } catch (error) {
-    console.error('Error reading data for user:', userId, error);
-    return null;  // Возвращаем null в случае ошибки
+    console.error(`Ошибка при чтении данных для пользователя ${userId}:`, error);
+    return null;
   }
 };
