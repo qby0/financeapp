@@ -96,40 +96,39 @@ const App = () => {
   if (loading) return <LoadingScreen />;
 
   return (
+    <><video className="video-background" autoPlay loop muted>
+      <source src="/3varLiza.mp4" type="video/mp4" />
+      Ваш браузер не поддерживает видео.
+    </video>
     <div className="App">
-      <Navbar
-        user={user}
-        onSignUpClick={handleSignUpClick}
-        onLoginClick={handleLoginClick}
-        onLogoutClick={handleLogout}
-      />
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <HomePage
+        <Navbar
+          user={user}
+          onSignUpClick={handleSignUpClick}
+          onLoginClick={handleLoginClick}
+          onLogoutClick={handleLogout} />
+        <Routes>
+          <Route
+            path="/"
+            element={<HomePage
               onSignUpClick={handleSignUpClick}
               onLearnMoreClick={handleLearnMoreClick}
               onContactClick={handleContactClick}
               onUserGuideClick={handleUserGuideClick} // Исправлено использование этой функции
-            />
-          }
-        />
-        <Route path="/dashboard" element={<Dashboard user={user} />} />
-      </Routes>
+            />} />
+          <Route path="/dashboard" element={<Dashboard user={user} />} />
+        </Routes>
 
-      <SignUpModal isOpen={isSignUpOpen} onClose={handleCloseModal} />
-      <LoginModal isOpen={isLoginOpen} onClose={handleCloseModal} onLoginSuccess={handleLoginSuccess} />
-      <LearnMoreModal isOpen={isLearnMoreOpen} onClose={handleCloseModal} />
-      <ContactModal isOpen={isContactOpen} onClose={handleCloseModal} />
-      <UserGuideModal isOpen={isUserGuideOpen} onClose={handleCloseModal} />
-     
-      <AutoCloseModal
-        message={autoCloseMessage}
-        isOpen={isAutoCloseModalOpen}
-        onClose={handleCloseModal}
-      /> {/* Добавляем AutoCloseModal для временного сообщения */}
-    </div>
+        <SignUpModal isOpen={isSignUpOpen} onClose={handleCloseModal} />
+        <LoginModal isOpen={isLoginOpen} onClose={handleCloseModal} onLoginSuccess={handleLoginSuccess} />
+        <LearnMoreModal isOpen={isLearnMoreOpen} onClose={handleCloseModal} />
+        <ContactModal isOpen={isContactOpen} onClose={handleCloseModal} />
+        <UserGuideModal isOpen={isUserGuideOpen} onClose={handleCloseModal} />
+
+        <AutoCloseModal
+          message={autoCloseMessage}
+          isOpen={isAutoCloseModalOpen}
+          onClose={handleCloseModal} /> {/* Добавляем AutoCloseModal для временного сообщения */}
+      </div></>
   );
 };
 

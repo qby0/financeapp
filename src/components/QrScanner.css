@@ -1,0 +1,47 @@
+.qr-scanner {
+  padding: 1rem;
+  margin: 2rem auto;
+  width: 100%; /* Используем полную ширину экрана */
+  max-width: 600px; /* Максимальная ширина для больших экранов */
+  border-radius: 5px;
+  box-shadow: 0 1px 7px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.qr-scanner h3 {
+  color: #ff1493;
+  margin-bottom: 1rem;
+}
+
+#reader {
+  width: 100%; /* Полная ширина сканера */
+  height: auto; /* Автоматическая высота для подстройки под содержимое */
+  max-height: 1000px; /* Максимальная высота для сканера */
+  border: 2px dashed #ff1493; /* Рамка для области сканирования */
+  background-color: #ffffff53;
+  margin: 1rem 0;
+}
+
+.qr-scanner button {
+  padding: 0.5rem 1.5rem;
+  background-color: #ff1493;
+  color: white;
+  border: 3px solid #ff1493;
+  border-radius: 5px;
+  margin: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.qr-scanner button:hover,
+.qr-scanner button:active {
+  background-color: rgba(255, 20, 147, 0.8);
+  border-color: rgba(255, 20, 147, 0.8);
+}
+
+.qr-scanner .loading {
+  color: rgb(255, 255, 255);
+}

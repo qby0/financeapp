@@ -1,0 +1,28 @@
+.new-cost {
+  padding: 1rem;
+  margin: 2rem auto;
+  width: 70rem;
+  max-width: 95%;
+  border-radius: 5px;
+  text-align: center;
+  box-shadow: 0 1px 7px rgba(0, 0, 0, 0.25);
+}
+
+.new-cost button {
+  flex: 1; /* Равная ширина для обеих кнопок */
+  padding: 0.5rem 2rem;
+  background-color: #ff1493;
+  color: white;
+  border: 3px solid #ff1493;
+  border-radius: 5px;
+  margin-right: 3px;
+  cursor: pointer;
+}
+
+
+
+.new-cost button:hover,
+.new-cost button:active {
+  background-color: rgba(255, 20, 147, 0.8); /* Изменено на полупрозрачный черно-розовый */
+  border-color: rgba(255, 20, 147, 0.8); /* Изменено на полупрозрачный черно-розовый */
+}

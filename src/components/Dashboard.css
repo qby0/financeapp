@@ -1,0 +1,126 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+.video-background {
+  position: fixed; /* Закрепляет видео на фоне */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Обрезает видео, чтобы заполнить контейнер */
+  z-index: -1; /* Убедитесь, что видео находится за содержимым */
+}
+
+
+h1{
+    text-align: center;
+    color: #ffffff;
+}
+
+.dashboard {
+  /*background-color: #000000; Изменено на черно-розовый */
+  padding: 1rem;
+  margin: 2rem auto;
+  width: 70rem;
+  max-width: 95%;
+  border-radius: 5px;
+  text-align: center;
+  box-shadow: 0 1px 7px rgba(0, 0, 0, 0.25);
+}
+
+  
+  .dashboard button {
+    flex: 1; /* Равная ширина для обеих кнопок */
+    padding: 0.5rem 2rem;
+    background-color: #ff1493;
+    color: white;
+    border: 3px solid #ff1493;
+    border-radius: 5px;
+    margin-right: 3px;
+    cursor: pointer;
+  }
+  
+  
+  
+  .dashboard button:hover,
+  .dashboard button:active {
+    background-color: rgba(255, 20, 147, 0.8); /* Изменено на полупрозрачный черно-розовый */
+    border-color: rgba(255, 20, 147, 0.8); /* Изменено на полупрозрачный черно-розовый */
+  }
+  
+
+  .table-container {
+    width: 75%;
+    margin: 0 auto; /* Центрирование таблицы на странице */
+  }
+  
+  .chart-table {
+    width: 100%; /* Занимает всю ширину контейнера */
+    border-collapse: collapse; /* Убирает пробелы между ячейками */
+  }
+  
+  .chart-cell {
+    width: 100%; /* Каждая ячейка занимает половину ширины таблицы */
+    vertical-align: middle; /* Выравнивание содержимого по вертикали */
+    box-shadow: 0 1px 7px rgba(0, 0, 0, 0.25); /* Тень для ячеек */
+    display: flex; /* Включаем Flexbox */
+    justify-content: center; /* Центрируем содержимое по горизонтали */
+    align-items: center; /* Центрируем содержимое по вертикали */
+  }
+
+/* Dashboard.css */
+
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 30%;
+    margin: 0 auto;
+    padding: 20px;
+    box-shadow: 0 1px 7px rgba(0, 0, 0, 0.25);
+  }
+  
+  .dashboard-difference {
+    text-align: center;
+    color: white;
+    margin-bottom: 10px;
+  }
+  
+  .dashboard-row {
+    display: flex;
+    justify-content: space-around; /* Чтобы создать равные отступы между элементами */
+    width: 100%;
+  }
+  
+  .dashboard-spendings,
+  .dashboard-income {
+    text-align: center;
+    padding: 5px;
+    border-radius: 3px;
+    flex: 1; /* Позволяет блокам занимать равное пространство */
+    max-width: 120px; /* Устанавливаем максимальную ширину для блоков */
+    margin: 0 10px; /* Добавляем небольшой отступ между блоками */
+  }
+  
+  .dashboard-spendings {
+    background-color: #8e004c; /* Полупрозрачный красный */
+    color: #ffffff;
+  }
+  
+  .dashboard-income {
+    background-color: #ff5588; /* Полупрозрачный зеленый */
+    color: #ffffff;
+  }
+  
+  /* Убираем отступы между названием и цифрой */
+  .dashboard-spendings span,
+  .dashboard-income span {
+    display: block; /* Чтобы каждое значение занимало отдельный блок */
+    margin: 0; /* Убираем отступы */
+  }
+  
+  
+  
