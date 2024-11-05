@@ -2,54 +2,128 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.5rem;
+    padding: 1rem;
     margin: 1rem 0;
-    background-color: #111010;
-    border-radius: 6px;
-  }
-  
-  .cost-item__description {
+    background-color: #000000;
+    border-radius: 10px;
+    color: #fefae1;
+}
+
+.cost-item__date-box {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    align-items: flex-end;
-    flex-flow: column-reverse;
-    justify-content: flex-start;
+    align-items: center;
+    background-color: #ff1493;
+    color: white;
+    padding: 0.5rem;
+    border-radius: 10px;
+    font-weight: bold;
+    width: 60px;
+    text-align: center;
+}
+
+.cost-item__date-day {
+    font-size: 1.5rem;
+}
+
+.cost-item__date-month,
+.cost-item__date-year {
+    font-size: 0.75rem;
+}
+
+.cost-item__description {
     flex: 1;
-  }
-  
-  .cost-item h2 {
-    color: #ff1493;
-    font-size: 1rem;
-    flex: 1;
-    margin: 0 1rem;
+    margin-left: 1rem;
     color: #fefae1;
-  }
-  
-  .cost-item__price {
+}
+
+.cost-item__price {
     font-size: 1rem;
     font-weight: bold;
-    color: #ffffff;
+    color: white;
     background-color: #ff1493;
-    padding: 0.5rem;
-    border-radius: 5px;
-  }
-  
-  @media (min-width: 580px) {
-    .cost-item__description {
-      flex-direction: row;
-      align-items: center;
-      justify-content: flex-start;
-      flex: 1;
-    }
-  
-    .cost-item__description h2 {
-      font-size: 1.25rem;
-    }
-  
-    .cost-item__price {
-      font-size: 1.25rem;
-      padding: 0.5rem 1.5rem;
-    }
-  }
-  
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    text-align: center;
+}
+
+
+
+.button-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: 0.5rem;
+}
+
+.edit-button,
+.delete {
+  width: auto; /* Adjusted for icon size */
+  height: auto; /* Adjusted for icon size */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  color: #ff1493;
+  font-size: 27;
+}
+
+.edit-button {
+  background-color: #000000; /* Green for edit */
+}
+
+.delete {
+  background-color: #000000; /* Red for delete */
+}
+
+.button-icon {
+  width: 20px; /* Control icon size */
+  height: 20px;
+}
+
+.edit-button:hover {
+  background-color: #121212; /* Darker green on hover */
+}
+
+.delete:hover {
+  background-color: #121212; /* Darker red on hover */
+}
+
+
+
+.edit-mode {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.edit-input {
+  flex: 1; /* Makes each input field take up available width equally */
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box; /* Ensures padding is included in width */
+}
+
+.save,
+.cancel{
+  padding: 0.5rem 2rem;
+  background-color: #ff1493;
+  color: white;
+  border: 3px solid #ff1493;
+  border-radius: 5px;
+  margin-right: 3px;
+  cursor: pointer;
+
+}
+.save:hover,
+.cancel:hover {
+  background-color: rgba(255, 20, 147, 0.8); /* Изменено на полупрозрачный черно-розовый */
+  border-color: rgba(255, 20, 147, 0.8); /* Изменено на полупрозрачный черно-розовый */
+}
+

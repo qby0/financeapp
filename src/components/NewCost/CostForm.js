@@ -18,16 +18,25 @@ const CostForm = (props) => {
         setInputDate(event.target.value);
     };
 
+    const generateSafeId = () => {
+        return Date.now().toString() + '-' + Math.random().toString(36).substring(2, 9);
+    };
 
     const submitHandler = (event) => {
         event.preventDefault();
 
         const costData = {
+            id: generateSafeId(),
             description: inputName,
             cost: inputAmount,
-            date: new Date(inputDate),  // Сохраняем оригинальную дату
+            date: new Date(inputDate).toLocaleDateString('en-GB', { // Fixed English date format
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            }),
         };
 
+        console.log(costData);
 
         props.onSaveCostData(costData);
         setInputName('');

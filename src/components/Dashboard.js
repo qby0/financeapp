@@ -30,7 +30,7 @@ function App() {
     <>
       {/* Видео на фоне */}
       <video className="video-background" autoPlay loop muted>
-        <source src="/1v_1.mp4" type="video/mp4" />
+        <source src="/BLACK1.mp4" type="video/mp4" />
         Ваш браузер не поддерживает видео.
       </video>
 
@@ -38,25 +38,25 @@ function App() {
 
       <div className="dashboard-container">
         <div className="dashboard-difference">
-          <strong>Difference</strong>
+          <strong>DIFFERENCE</strong>
           <br />
           <span>+1000€</span>
         </div>
 
         <div className="dashboard-row">
           <div className="dashboard-income">
-            <span>Income</span>
+            <span>INCOME</span>
             <span>3000€</span>
           </div>
           <div className="dashboard-spendings">
-            <span>Expenses</span>
+            <span>EXPENSES</span>
             <span>2000€</span>
           </div>
         </div>
       </div>
 
       <div className="dashboard">
-        <button onClick={() => setShowScanner(true)}>Use QR</button>
+        <button onClick={() => setShowScanner(true)}>USE QR</button>
 
         {showScanner && (
           <QrScanner onCancel={() => setShowScanner(false)} />

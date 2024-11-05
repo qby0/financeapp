@@ -17,18 +17,18 @@ const NewCost = (props) => {
         };
 
         const full = costData.date;
-    
+
         const extractDateFromString = (full) => {
             const dateObj = new Date(full);
-            const day = String(dateObj.getDate()).padStart(2, '0');
-            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-            const year = dateObj.getFullYear();
-    
-            return `${day}-${month}-${year}`;
+            return dateObj.toLocaleDateString('en-GB', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
         };
 
         const formattedDate = extractDateFromString(full);
-    
+
         const costDataCl = {
             ...inputCostData,
             date: formattedDate,
@@ -53,7 +53,7 @@ const NewCost = (props) => {
                     console.error('Error saving data to Realtime Database:', error);
                 });
         } else {
-            console.error('Пользователь не аутентифицирован.');
+            console.error('User is not authenticated.');
         }
     };
 

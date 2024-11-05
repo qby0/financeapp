@@ -4,7 +4,7 @@
   width: 100%; /* Используем полную ширину экрана */
   max-width: 600px; /* Максимальная ширина для больших экранов */
   border-radius: 5px;
-  box-shadow: 0 1px 7px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 1px 7px rgba(249, 2, 187, 0.25); /* Тень для ячеек */
   display: flex;
   flex-direction: column;
   align-items: center;

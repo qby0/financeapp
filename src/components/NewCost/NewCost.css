@@ -1,11 +1,12 @@
 .new-cost {
   padding: 1rem;
+  background-color: #000000;
   margin: 2rem auto;
   width: 70rem;
   max-width: 95%;
   border-radius: 5px;
   text-align: center;
-  box-shadow: 0 1px 7px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 1px 7px rgba(249, 2, 187, 0.25); /* Тень для ячеек */
 }
 
 .new-cost button {

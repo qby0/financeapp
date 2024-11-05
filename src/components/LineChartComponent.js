@@ -10,10 +10,34 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 
+
+function CustomLegend(props) {
+  const { payload } = props;
+  return (
+      <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', flexWrap: 'wrap', paddingLeft: '10px' }}>
+          {payload.map((entry, index) => (
+              <div key={`item-${index}`} style={{ display: 'flex', alignItems: 'center', marginRight: '15px' }}>
+                  <span
+                      style={{
+                          display: 'inline-block',
+                          width: 10,
+                          height: 10,
+                          backgroundColor: entry.color,
+                          borderRadius: '50%',
+                          marginRight: 5,
+                      }}
+                  ></span>
+                  <span style={{ color: 'white' }}>{entry.value}</span>
+              </div>
+          ))}
+      </div>
+  );
+}
+
 // Get the current month dynamically
 const getCurrentMonthName = () => {
   const date = new Date();
-  return date.toLocaleString('default', { month: 'long' });
+  return date.toLocaleString('en-US', { month: 'long' });
 };
 
 const MonthlyIncomeExpensesLineChart = () => {
@@ -62,10 +86,9 @@ const MonthlyIncomeExpensesLineChart = () => {
         <XAxis dataKey="day" label={{ value: `${currentMonth}`, position: 'insideBottomRight', offset: -5 }} />
         <YAxis />
         <Tooltip />
-        {/* Move the legend to the bottom-left corner */}
-        <Legend verticalAlign="bottom" align="left" />
-        <Line type="monotone" dataKey="income" stroke="#ff5588" strokeWidth={3} name="Income" />
-        <Line type="monotone" dataKey="expenses" stroke="#c10067" strokeWidth={3} name="Expenses" />
+        <Legend content={<CustomLegend />} verticalAlign="bottom" align="left" />
+            <Line type="monotone" dataKey="income" stroke="#ff5588" strokeWidth={3} name="Income" />
+            <Line type="monotone" dataKey="expenses" stroke="#c10067" strokeWidth={3} name="Expenses" />
       </LineChart>
     </ResponsiveContainer>
   );

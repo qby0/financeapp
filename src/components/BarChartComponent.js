@@ -1,4 +1,5 @@
 import React from 'react';
+
 import {
   BarChart,
   Bar,
@@ -9,6 +10,29 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from 'recharts';
+
+function CustomLegend(props) {
+  const { payload } = props;
+  return (
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          {payload.map((entry, index) => (
+              <div key={`item-${index}`} style={{ display: 'flex', alignItems: 'center', marginLeft: 10 }}>
+                  <span
+                      style={{
+                          display: 'inline-block',
+                          width: 10,
+                          height: 10,
+                          backgroundColor: entry.color,
+                          borderRadius: '50%',
+                          marginRight: 5,
+                      }}
+                  ></span>
+                  <span style={{ color: 'white' }}>{entry.value}</span>
+              </div>
+          ))}
+      </div>
+  );
+}
 
 const MonthlyIncomeExpensesChart = () => {
   // Пример данных о доходах и расходах
@@ -34,10 +58,10 @@ const MonthlyIncomeExpensesChart = () => {
         <XAxis dataKey="month" />
         <YAxis />
         <Tooltip />
-        {/* Изменение позиции легенды */}
-        <Legend verticalAlign='bottom' align="right" />
-        <Bar dataKey="income" fill="#ff5588" name="Income" /> {/* Светлый розовый */}
-        <Bar dataKey="expenses" fill="#8e004c" name="Expenses" /> {/* Темный розовый */}
+        <Legend content={<CustomLegend />} verticalAlign="bottom" align="right" />
+            <Bar dataKey="income" fill="#ff5588" name="Income" /> {/* Light Pink */}
+            <Bar dataKey="expenses" fill="#8e004c" name="Expenses" /> {/* Dark Pink */}
+        <Legend content={<CustomLegend />} verticalAlign="bottom" align="right" />
       </BarChart>
     </ResponsiveContainer>
   );

@@ -97,7 +97,7 @@ const App = () => {
 
   return (
     <><video className="video-background" autoPlay loop muted>
-      <source src="/3varLiza.mp4" type="video/mp4" />
+      <source src="/BLACK1.mp4" type="video/mp4" />
       Ваш браузер не поддерживает видео.
     </video>
     <div className="App">
