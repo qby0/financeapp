@@ -2,16 +2,20 @@ import CostForm from './CostForm';
 import './NewCost.css';
 import React, { useState } from 'react';
 import { database } from '../../firebase';
-import { ref, set, get } from 'firebase/database';
+import { ref, set } from 'firebase/database';
+import { getAuth } from 'firebase/auth';
 
 const NewCost = (props) => {
     const [isFormVisible, setIsFormVisible] = useState(false);
 
     const saveCostDataHandler = (inputCostData) => {
+        const purchaseId = Date.now().toString();
+
         const costData = {
             ...inputCostData,
+            id: purchaseId,
         };
-    
+
         const full = costData.date;
     
         const extractDateFromString = (full) => {
@@ -20,57 +24,38 @@ const NewCost = (props) => {
             const month = String(dateObj.getMonth() + 1).padStart(2, '0');
             const year = dateObj.getFullYear();
     
-            return `${day}.${month}.${year}`;
+            return `${day}-${month}-${year}`;
         };
-    
+
         const formattedDate = extractDateFromString(full);
-    
-        const purchaseId = Date.now().toString();
-        const costRef = ref(database, `purchases/${purchaseId}`);
     
         const costDataCl = {
             ...inputCostData,
             date: formattedDate,
             id: purchaseId,
         };
-    
-        set(costRef, costDataCl)
-            .then(() => {
-                console.log('Data saved to Realtime Database');
-                fetchCostData(purchaseId);
-            })
-            .catch((error) => {
-                console.error('Error saving data to Realtime Database:', error);
-            });
-    
-        setIsFormVisible(false);
-    };    
 
-    const fetchCostData = (purchaseId) => {
-        const costRef = ref(database, `purchases/${purchaseId}`);
-    
-        get(costRef)
-            .then((snapshot) => {
-                if (snapshot.exists()) {
-                    const fetchedCostData = snapshot.val();
-    
-                    const formattedCostData = {
-                        ...fetchedCostData,
-                        date: new Date(fetchedCostData.date.split('.').reverse().join('-'))
-                    };
-    
-                    console.log('Data fetched and formatted:', formattedCostData);
-    
-                    props.onAddCost(formattedCostData);
-                } else {
-                    console.log('No data available');
-                }
-            })
-            .catch((error) => {
-                console.error('Error fetching data from Realtime Database:', error);
-            });
+        props.onAddCost(costData);
+        setIsFormVisible(false);
+
+        const auth = getAuth();
+        const currentUser = auth.currentUser;
+
+        if (currentUser) {
+            const userId = currentUser.uid;
+            const costRef = ref(database, `users/${userId}/purchases/${purchaseId}`);
+
+            set(costRef, costDataCl)
+                .then(() => {
+                    console.log('Data saved to Realtime Database');
+                })
+                .catch((error) => {
+                    console.error('Error saving data to Realtime Database:', error);
+                });
+        } else {
+            console.error('Пользователь не аутентифицирован.');
+        }
     };
-    
 
     const inputCostDataHandler = () => {
         setIsFormVisible(true);
@@ -82,7 +67,7 @@ const NewCost = (props) => {
 
     return (
         <div className="new-cost">
-            {!isFormVisible && <button onClick={inputCostDataHandler}>Add NEW Spending</button>}
+            {!isFormVisible && <button onClick={inputCostDataHandler}>Add Manually</button>}
             {isFormVisible && <CostForm onSaveCostData={saveCostDataHandler} onCancel={cancelCostHandler} />}
         </div>
     );
