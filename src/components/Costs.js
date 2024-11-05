@@ -4,34 +4,42 @@ import Card from './Card';
 import CostsFilter from './NewCost/CostsFilter';
 import { database } from '../firebase';
 import { ref, get } from 'firebase/database';
+import { getAuth } from 'firebase/auth';
 import './Costs.css';
 
 function Costs(props) {
     const [selectedYear, setSelectedYear] = useState("2024");
     const [loadedCosts, setLoadedCosts] = useState([]);
 
+
     useEffect(() => {
         const fetchCosts = async () => {
-            const costsRef = ref(database, 'purchases');
+            const auth = getAuth();
+            const currentUser = auth.currentUser;
 
-            try {
-                const snapshot = await get(costsRef);
-                if (snapshot.exists()) {
-                    const fetchedCosts = snapshot.val();
+            if (currentUser) {
+                const userId = currentUser.uid;
+                const costsRef = ref(database, `users/${userId}/purchases`);
 
-                    const costsArray = Object.keys(fetchedCosts).map(key => {
-                        return {
-                            ...fetchedCosts[key],
-                            date: new Date(fetchedCosts[key].date.split('.').reverse().join('-'))
-                        };
-                    });
+                try {
+                    const snapshot = await get(costsRef);
+                    if (snapshot.exists()) {
+                        const fetchedCosts = snapshot.val();
 
-                    setLoadedCosts(costsArray);
-                } else {
-                    console.log('No data available');
+                        const costsArray = Object.keys(fetchedCosts).map(key => {
+                            return {
+                                ...fetchedCosts[key],
+                                date: new Date(fetchedCosts[key].date.split('.').reverse().join('-'))
+                            };
+                        });
+
+                        setLoadedCosts(costsArray);
+                    } else {
+                        console.log('No data available');
+                    }
+                } catch (error) {
+                    console.error('Error fetching costs from Realtime Database:', error);
                 }
-            } catch (error) {
-                console.error('Error fetching costs from Realtime Database:', error);
             }
         };
 
