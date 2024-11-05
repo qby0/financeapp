@@ -4,12 +4,15 @@ import Card from './Card';
 import React, { useState } from 'react';
 import { database } from '../firebase';
 import { ref, update, remove } from 'firebase/database';
+import { getAuth } from 'firebase/auth';
 
 function CostItem(props) {
     const [editMode, setEditMode] = useState(false);
     const [currentDate, setCurrentDate] = useState(props.date);
     const [currentDescription, setCurrentDescription] = useState(props.description);
     const [currentCost, setCurrentCost] = useState(props.cost);
+    const auth = getAuth();
+    const currentUser = auth.currentUser;
 
     const toggleEditMode = () => {
         setEditMode(prevMode => !prevMode);
@@ -38,35 +41,45 @@ function CostItem(props) {
     const saveChangesHandler = () => {
         const formattedDate = formatDate(currentDate);
         
-        const costRef = ref(database, `purchases/${props.id}`);
+        const auth = getAuth();
+        const currentUser = auth.currentUser;
+
+        if (currentUser) {
+            const userId = currentUser.uid;
+            const costRef = ref(database, `users/${userId}/purchases/${props.id}`);
+        
 
         // Обновляем все данные в базе данных
-        update(costRef, { 
-            date: formattedDate,
-            description: currentDescription,
-            cost: currentCost 
-        })
-        .then(() => {
-            console.log('Data updated successfully!');
-            setEditMode(false); // Выход из режима редактирования после сохранения
-        })
-        .catch((error) => {
-            console.error('Error updating data:', error);
-        });
+            update(costRef, { 
+                date: formattedDate,
+                description: currentDescription,
+                cost: currentCost 
+            })
+            .then(() => {
+                console.log('Data updated successfully!');
+                setEditMode(false); // Выход из режима редактирования после сохранения
+            })
+            .catch((error) => {
+                console.error('Error updating data:', error);
+            });
+        }
     };
 
     const deleteCostHandler = () => {
-        const costRef = ref(database, `purchases/${props.id}`);
+        if (currentUser) {
+            const userId = currentUser.uid;
+            const costRef = ref(database, `users/${userId}/purchases/${props.id}`);
 
-        // Удаляем данные из базы данных
-        remove(costRef)
-        .then(() => {
-            console.log('Data removed successfully!');
-            // Здесь можно добавить логику для удаления элемента из UI
-        })
-        .catch((error) => {
-            console.error('Error removing data:', error);
-        });
+            // Удаляем данные из базы данных
+            remove(costRef)
+            .then(() => {
+                console.log('Data removed successfully!');
+                // Здесь можно добавить логику для удаления элемента из UI
+            })
+            .catch((error) => {
+                console.error('Error removing data:', error);
+            });
+        }
     };
 
     return (
