@@ -1,97 +1,97 @@
 import React from 'react';
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from 'recharts';
+    import {
+        LineChart,
+        Line,
+        XAxis,
+        YAxis,
+        CartesianGrid,
+        Tooltip,
+        Legend,
+        ResponsiveContainer,
+    } from 'recharts';
 
+    function CustomLegend(props) {
+      const { payload } = props;
+      return (
+          <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', flexWrap: 'wrap', paddingLeft: '10px' }}>
+              {payload.map((entry, index) => (
+                  <div key={`item-${index}`} style={{ display: 'flex', alignItems: 'center', marginRight: '15px' }}>
+                      <span
+                          style={{
+                              display: 'inline-block',
+                              width: 10,
+                              height: 10,
+                              backgroundColor: entry.color,
+                              borderRadius: '50%',
+                              marginRight: 5,
+                          }}
+                      />
+                      <span style={{ color: 'white' }}>{entry.value}</span>
+                  </div>
+              ))}
+          </div>
+      );
+    }
 
-function CustomLegend(props) {
-  const { payload } = props;
-  return (
-      <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', flexWrap: 'wrap', paddingLeft: '10px' }}>
-          {payload.map((entry, index) => (
-              <div key={`item-${index}`} style={{ display: 'flex', alignItems: 'center', marginRight: '15px' }}>
-                  <span
-                      style={{
-                          display: 'inline-block',
-                          width: 10,
-                          height: 10,
-                          backgroundColor: entry.color,
-                          borderRadius: '50%',
-                          marginRight: 5,
-                      }}
-                  ></span>
-                  <span style={{ color: 'white' }}>{entry.value}</span>
-              </div>
-          ))}
-      </div>
-  );
-}
+    const LineChartComponent = ({ costs, selectedYear, selectedMonth }) => {
+        // Функція для отримання кількості днів у місяці
+        const getDaysInMonth = (year, month) => {
+            return new Date(year, month, 0).getDate();
+        };
 
-// Get the current month dynamically
-const getCurrentMonthName = () => {
-  const date = new Date();
-  return date.toLocaleString('en-US', { month: 'long' });
-};
+        // Ідентифікуємо обраний рік та місяць
+        const year = parseInt(selectedYear, 10);
+        const month = selectedMonth ? parseInt(selectedMonth, 10) : null;
 
-const MonthlyIncomeExpensesLineChart = () => {
-  const currentMonth = getCurrentMonthName(); // Get the current month name
+        // Отримуємо кількість днів у обраному місяці
+        const daysInMonth = month ? getDaysInMonth(year, month) : 31; // Якщо місяць не вибрано, використовуйте максимальну кількість днів
 
-  // Example data: income and expenses per day for the current month
-  const data = [
-    { day: '1', income: 500, expenses: 300 },
-    { day: '2', income: 700, expenses: 200 },
-    { day: '3', income: 600, expenses: 400 },
-    { day: '4', income: 800, expenses: 500 },
-    { day: '5', income: 900, expenses: 300 },
-    { day: '6', income: 1000, expenses: 600 },
-    { day: '7', income: 750, expenses: 450 },
-    { day: '8', income: 650, expenses: 300 },
-    { day: '9', income: 700, expenses: 350 },
-    { day: '10', income: 800, expenses: 400 },
-    { day: '11', income: 600, expenses: 200 },
-    { day: '12', income: 500, expenses: 300 },
-    { day: '13', income: 700, expenses: 400 },
-    { day: '14', income: 850, expenses: 350 },
-    { day: '15', income: 950, expenses: 600 },
-    { day: '16', income: 720, expenses: 380 },
-    { day: '17', income: 800, expenses: 420 },
-    { day: '18', income: 900, expenses: 500 },
-    { day: '19', income: 600, expenses: 250 },
-    { day: '20', income: 700, expenses: 300 },
-    { day: '21', income: 850, expenses: 450 },
-    { day: '22', income: 900, expenses: 600 },
-    { day: '23', income: 780, expenses: 420 },
-    { day: '24', income: 820, expenses: 500 },
-    { day: '25', income: 650, expenses: 350 },
-    { day: '26', income: 700, expenses: 400 },
-    { day: '27', income: 900, expenses: 500 },
-    { day: '28', income: 1000, expenses: 550 },
-    { day: '29', income: 950, expenses: 600 },
-    { day: '30', income: 800, expenses: 400 },
-    { day: '31', income: 850, expenses: 450 },
-  ];
+        // Ініціалізуємо об'єкт для зберігання сум доходів та витрат за кожним днем
+        const dailyData = {};
 
-  return (
-    <ResponsiveContainer width="100%" height={300}>
-      <LineChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 30 }}>
-        <CartesianGrid strokeDasharray="3 3" />
-        {/* Display the current month name dynamically on the X-axis */}
-        <XAxis dataKey="day" label={{ value: `${currentMonth}`, position: 'insideBottomRight', offset: -5 }} />
-        <YAxis />
-        <Tooltip />
-        <Legend content={<CustomLegend />} verticalAlign="bottom" align="left" />
-            <Line type="monotone" dataKey="income" stroke="#ff5588" strokeWidth={3} name="Income" />
-            <Line type="monotone" dataKey="expenses" stroke="#c10067" strokeWidth={3} name="Expenses" />
-      </LineChart>
-    </ResponsiveContainer>
-  );
-};
+        // Заповнюємо об'єкт початковими значеннями
+        for (let day = 1; day <= daysInMonth; day++) {
+            dailyData[day] = { day: day.toString(), income: 0, expenses: 0 };
+        }
 
-export default MonthlyIncomeExpensesLineChart;
+        // Агрегуємо доходи та витрати за кожним днем
+        costs.forEach(cost => {
+            const date = cost.date;
+            const costYear = date.getFullYear();
+            const costMonth = date.getMonth() + 1; // Місяці нумеруються з 0
+            const costDay = date.getDate();
+
+            if (
+                (year && costYear === year) &&
+                (month ? costMonth === month : true)
+            ) {
+                if (cost.type === 'income') {
+                    dailyData[costDay].income += cost.cost;
+                } else if (cost.type === 'expense') {
+                    dailyData[costDay].expenses += Math.abs(cost.cost);
+                }
+            }
+        });
+
+        // Перетворюємо об'єкт у масив для Recharts
+        const data = Object.values(dailyData);
+
+        // Динамічний назва місяця для осі X
+        const currentMonthName = month ? new Date(year, month - 1).toLocaleString('default', { month: 'long' }) : 'Month';
+
+        return (
+            <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 30 }}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="day" label={{ value: currentMonthName, position: 'insideBottomRight', offset: -5 }} />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend content={<CustomLegend />} verticalAlign="bottom" align="left" />
+                    <Line type="monotone" dataKey="income" stroke="#ff5588" strokeWidth={3} name="Income" />
+                    <Line type="monotone" dataKey="expenses" stroke="#c10067" strokeWidth={3} name="Expenses" />
+                </LineChart>
+            </ResponsiveContainer>
+        );
+    };
+
+    export default LineChartComponent;
