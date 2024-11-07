@@ -1,76 +1,61 @@
-import CostForm from './CostForm';
-import './NewCost.css';
 import React, { useState } from 'react';
-import { database } from '../../firebase';
-import { ref, set } from 'firebase/database';
-import { getAuth } from 'firebase/auth';
+    import CostForm from './CostForm';
+    import './NewCost.css';
+    import { database } from '../../firebase';
+    import { ref, set } from 'firebase/database';
+    import { getAuth } from 'firebase/auth';
 
-const NewCost = (props) => {
-    const [isFormVisible, setIsFormVisible] = useState(false);
+    const NewCost = () => { // Видалили props
+        const [isFormVisible, setIsFormVisible] = useState(false);
 
-    const saveCostDataHandler = (inputCostData) => {
-        const purchaseId = Date.now().toString();
+        const saveCostDataHandler = async (inputCostData) => {
+            const purchaseId = inputCostData.id;
 
-        const costData = {
-            ...inputCostData,
-            id: purchaseId,
-        };
+            const costDataCl = {
+                ...inputCostData,
+                // Дата вже у форматі YYYY-MM-DD, додаткове форматування не потрібне
+            };
 
-        const full = costData.date;
+            console.log("Adding new cost:", costDataCl);
 
-        const extractDateFromString = (full) => {
-            const dateObj = new Date(full);
-            return dateObj.toLocaleDateString('en-GB', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric'
-            });
-        };
+            // Видалили виклик props.onAddCost
+            // props.onAddCost(inputCostData);
 
-        const formattedDate = extractDateFromString(full);
+            setIsFormVisible(false);
 
-        const costDataCl = {
-            ...inputCostData,
-            date: formattedDate,
-            id: purchaseId,
-        };
+            const auth = getAuth();
+            const currentUser = auth.currentUser;
 
-        props.onAddCost(costData);
-        setIsFormVisible(false);
+            if (currentUser) {
+                const userId = currentUser.uid;
+                const costRef = ref(database, `users/${userId}/purchases/${purchaseId}`);
 
-        const auth = getAuth();
-        const currentUser = auth.currentUser;
-
-        if (currentUser) {
-            const userId = currentUser.uid;
-            const costRef = ref(database, `users/${userId}/purchases/${purchaseId}`);
-
-            set(costRef, costDataCl)
-                .then(() => {
+                try {
+                    await set(costRef, costDataCl);
                     console.log('Data saved to Realtime Database');
-                })
-                .catch((error) => {
+                } catch (error) {
                     console.error('Error saving data to Realtime Database:', error);
-                });
-        } else {
-            console.error('User is not authenticated.');
-        }
+                }
+            } else {
+                console.error('User is not authenticated.');
+            }
+        };
+
+        const inputCostDataHandler = () => {
+            setIsFormVisible(true);
+        };
+
+        const cancelCostHandler = () => {
+            setIsFormVisible(false);
+        };
+
+        return (
+            <div className="new-cost">
+                {!isFormVisible && <button onClick={inputCostDataHandler}>Add Manually</button>}
+                {isFormVisible && <CostForm onSaveCostData={saveCostDataHandler} onCancel={cancelCostHandler} />}
+            </div>
+        );
     };
 
-    const inputCostDataHandler = () => {
-        setIsFormVisible(true);
-    };
-
-    const cancelCostHandler = () => {
-        setIsFormVisible(false);
-    };
-
-    return (
-        <div className="new-cost">
-            {!isFormVisible && <button onClick={inputCostDataHandler}>Add Manually</button>}
-            {isFormVisible && <CostForm onSaveCostData={saveCostDataHandler} onCancel={cancelCostHandler} />}
-        </div>
-    );
-};
-
-export default NewCost;
+    export default NewCost;
+    
