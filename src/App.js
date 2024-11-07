@@ -15,7 +15,7 @@ import FAQSection from './components/FAQSection';
 import ContactSection from './components/ContactSection';
 import Dashboard from './components/Dashboard';
 import ContactModal from './components/ContactModal';
-import AutoCloseModal from './components/AutoCloseModal'; // Добавляем AutoCloseModal для невидимого уведомления
+import AutoCloseModal from './components/AutoCloseModal'; // Додаємо AutoCloseModal для невидимого повідомлення
 import { auth, readData } from './components/firebase';
 import LoadingScreen from './components/LoadingScreen';
 
@@ -27,68 +27,71 @@ const HomePage = ({ onSignUpClick, onLearnMoreClick, onContactClick, onUserGuide
     <FeaturesSection />
     <FAQSection />
     <ContactSection />
-    <Footer onSignUpClick={onSignUpClick} onContactClick={onContactClick} onUserGuideClick={onUserGuideClick} />
+    <Footer
+      onSignUpClick={onSignUpClick}
+      onContactClick={onContactClick}
+      onUserGuideClick={onUserGuideClick}
+    />
   </>
 );
-
 const App = () => {
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isLearnMoreOpen, setIsLearnMoreOpen] = useState(false);
   const [isContactOpen, setIsContactOpen] = useState(false);
   const [isUserGuideOpen, setIsUserGuideOpen] = useState(false);
-  const [isAutoCloseModalOpen, setIsAutoCloseModalOpen] = useState(false); // Состояние для AutoCloseModal
+  const [isAutoCloseModalOpen, setIsAutoCloseModalOpen] = useState(false); // Стан для AutoCloseModal
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [autoCloseMessage, setAutoCloseMessage] = useState(''); // Сообщение для AutoCloseModal
+  const [autoCloseMessage, setAutoCloseMessage] = useState(''); // Повідомлення для AutoCloseModal
   const navigate = useNavigate();
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
-      if (authUser) {
-        if (!authUser.emailVerified) {
-          setAutoCloseMessage('Please verify your email before accessing the PennyWise project');
-          setIsAutoCloseModalOpen(true); // Показываем сообщение на 4 секунды
-          await auth.signOut();
-          setUser(null);
-          navigate('/');
-          return;
-        }
-        const userData = await readData(authUser.uid);
-        setUser({ ...authUser, ...userData });
-        navigate('/dashboard');
-      } else {
-        setUser(null);
-        navigate('/');
-      }
-      setLoading(false);
-    });
-    return () => unsubscribe();
+      const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
+          if (authUser) {
+              if (!authUser.emailVerified) {
+                  setAutoCloseMessage('Please verify your email before accessing the PennyWise project');
+                  setIsAutoCloseModalOpen(true);
+                  await auth.signOut();
+                  setUser(null);
+                  navigate('/');
+                  return;
+              }
+              const userData = await readData(authUser.uid);
+              setUser({ ...authUser, ...userData });
+              navigate('/dashboard');
+          } else {
+              setUser(null);
+              navigate('/');
+          }
+          setLoading(false);
+      });
+      return () => unsubscribe();
   }, [navigate]);
 
   const handleSignUpClick = () => setIsSignUpOpen(true);
   const handleLoginClick = () => setIsLoginOpen(true);
   const handleLearnMoreClick = () => setIsLearnMoreOpen(true);
   const handleContactClick = () => setIsContactOpen(true);
-  const handleUserGuideClick = () => setIsUserGuideOpen(true); // Убедись, что эта функция используется
+  const handleUserGuideClick = () => setIsUserGuideOpen(true);
 
   const handleCloseModal = () => {
-    setIsSignUpOpen(false);
-    setIsLoginOpen(false);
-    setIsLearnMoreOpen(false);
-    setIsContactOpen(false);
-    setIsUserGuideOpen(false);
-    setIsAutoCloseModalOpen(false); // Закрываем AutoCloseModal
+      setIsSignUpOpen(false);
+      setIsLoginOpen(false);
+      setIsLearnMoreOpen(false);
+      setIsContactOpen(false);
+      setIsUserGuideOpen(false);
+      setIsAutoCloseModalOpen(false);
   };
 
   const handleLogout = async () => {
-    try {
-      await auth.signOut();
-      setUser(null);
-      navigate('/');
-    } catch (error) {
-      console.error('Error logging out:', error);
-    }
+      try {
+          await auth.signOut();
+          setUser(null);
+          navigate('/');
+      } catch (error) {
+          console.error('Error logging out:', error);
+      }
   };
 
   const handleLoginSuccess = (userData) => setUser(userData);
@@ -96,46 +99,52 @@ const App = () => {
   if (loading) return <LoadingScreen />;
 
   return (
-    <><video className="video-background" autoPlay loop muted>
-      <source src="/BLACK1.mp4" type="video/mp4" />
-      Ваш браузер не поддерживает видео.
-    </video>
-    <div className="App">
-        <Navbar
-          user={user}
-          onSignUpClick={handleSignUpClick}
-          onLoginClick={handleLoginClick}
-          onLogoutClick={handleLogout} />
-        <Routes>
-          <Route
-            path="/"
-            element={<HomePage
-              onSignUpClick={handleSignUpClick}
-              onLearnMoreClick={handleLearnMoreClick}
-              onContactClick={handleContactClick}
-              onUserGuideClick={handleUserGuideClick} // Исправлено использование этой функции
-            />} />
-          <Route path="/dashboard" element={<Dashboard user={user} />} />
-        </Routes>
+      <>
+          <video className="video-background" autoPlay loop muted>
+              <source src="/BLACK1.mp4" type="video/mp4" />
+              Ваш браузер не підтримує відео.
+          </video>
+          <div className="App">
+              <Navbar
+                  user={user}
+                  onSignUpClick={handleSignUpClick}
+                  onLoginClick={handleLoginClick}
+                  onLogoutClick={handleLogout}
+              />
+              <Routes>
+                  <Route
+                      path="/"
+                      element={
+                          <HomePage
+                              onSignUpClick={handleSignUpClick}
+                              onLearnMoreClick={handleLearnMoreClick}
+                              onContactClick={handleContactClick}
+                              onUserGuideClick={handleUserGuideClick}
+                          />
+                      }
+                  />
+                  <Route path="/dashboard" element={<Dashboard user={user} />} />
+              </Routes>
 
-        <SignUpModal isOpen={isSignUpOpen} onClose={handleCloseModal} />
-        <LoginModal isOpen={isLoginOpen} onClose={handleCloseModal} onLoginSuccess={handleLoginSuccess} />
-        <LearnMoreModal isOpen={isLearnMoreOpen} onClose={handleCloseModal} />
-        <ContactModal isOpen={isContactOpen} onClose={handleCloseModal} />
-        <UserGuideModal isOpen={isUserGuideOpen} onClose={handleCloseModal} />
-
-        <AutoCloseModal
-          message={autoCloseMessage}
-          isOpen={isAutoCloseModalOpen}
-          onClose={handleCloseModal} /> {/* Добавляем AutoCloseModal для временного сообщения */}
-      </div></>
-  );
+              <SignUpModal isOpen={isSignUpOpen} onClose={handleCloseModal} />
+              <LoginModal isOpen={isLoginOpen} onClose={handleCloseModal} onLoginSuccess={handleLoginSuccess} />
+              <LearnMoreModal isOpen={isLearnMoreOpen} onClose={handleCloseModal} />
+              <ContactModal isOpen={isContactOpen} onClose={handleCloseModal} />
+              <UserGuideModal isOpen={isUserGuideOpen} onClose={handleCloseModal} />
+              <AutoCloseModal
+                    message={autoCloseMessage}
+                    isOpen={isAutoCloseModalOpen}
+                    onClose={handleCloseModal}
+                />
+            </div>
+        </>
+    );
 };
 
 const AppWithRouter = () => (
-  <Router>
-    <App />
-  </Router>
+    <Router>
+        <App />
+    </Router>
 );
 
 export default AppWithRouter;
