@@ -1,73 +1,45 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import CostItem from './CostItem';
 import Card from './Card';
-import CostsFilter from './NewCost/CostsFilter';
-import { database } from '../firebase';
-import { ref, get } from 'firebase/database';
-import { getAuth } from 'firebase/auth';
+import CostsFilter from '../components/NewCost/CostsFilter';
 import './Costs.css';
 
 function Costs(props) {
-    const [selectedYear, setSelectedYear] = useState("2024");
-    const [loadedCosts, setLoadedCosts] = useState([]);
+    const { costs, selectedYear, selectedMonth, onChangeYear, onChangeMonth } = props;
 
+    const filteredCosts = costs.filter(cost => {
+        const costYear = cost.date.getFullYear().toString();
+        const costMonth = ("0" + (cost.date.getMonth() + 1)).slice(-2);
 
-    useEffect(() => {
-        const fetchCosts = async () => {
-            const auth = getAuth();
-            const currentUser = auth.currentUser;
+        const yearMatch = costYear === selectedYear;
+        const monthMatch = selectedMonth ? costMonth === selectedMonth : true;
 
-            if (currentUser) {
-                const userId = currentUser.uid;
-                const costsRef = ref(database, `users/${userId}/purchases`);
-
-                try {
-                    const snapshot = await get(costsRef);
-                    if (snapshot.exists()) {
-                        const fetchedCosts = snapshot.val();
-
-                        const costsArray = Object.keys(fetchedCosts).map(key => {
-                            return {
-                                ...fetchedCosts[key],
-                                date: new Date(fetchedCosts[key].date.split('.').reverse().join('-'))
-                            };
-                        });
-
-                        setLoadedCosts(costsArray);
-                    } else {
-                        console.log('No data available');
-                    }
-                } catch (error) {
-                    console.error('Error fetching costs from Realtime Database:', error);
-                }
-            }
-        };
-
-        fetchCosts();
-    }, []);
-
-    const yearChangeHandler = (year) => {
-        setSelectedYear(year);
-    };
-
-    const filteredCosts = loadedCosts.filter(cost => {
-        return cost.date.getFullYear().toString() === selectedYear;
+        return (cost.type === 'expense' || cost.type === 'income') && yearMatch && monthMatch;
     });
 
     return (
         <div>
             <Card className="costs">
-                <CostsFilter year={selectedYear} onChangeYear={yearChangeHandler} />
-                {filteredCosts.length === 0 ? <p>No spends this year</p> :
+                <CostsFilter
+                    year={selectedYear}
+                    month={selectedMonth}
+                    onChangeYear={onChangeYear}
+                    onChangeMonth={onChangeMonth}
+                />
+                {filteredCosts.length === 0 ? (
+                    <p>No spends this year/month</p>
+                ) : (
                     filteredCosts.map((cost) => (
                         <CostItem
+                            key={cost.id}
                             id={cost.id}
                             date={cost.date}
                             description={cost.description}
                             cost={cost.cost}
+                            type={cost.type}
                         />
                     ))
-                }
+                )}
             </Card>
         </div>
     );
