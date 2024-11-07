@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import './CostForm.css';
 
 const CostForm = (props) => {
-    const [inputName, setInputName] = useState('');
+    const [inputType, setInputType] = useState('expense'); // Тип витрати
     const [inputAmount, setInputAmount] = useState('');
     const [inputDate, setInputDate] = useState('');
+    const [inputCategory, setInputCategory] = useState('Food'); // Категорія
 
-    const nameChangeHandler = (event) => {
-        setInputName(event.target.value);
+    const typeChangeHandler = (event) => {
+        setInputType(event.target.value);
     };
 
     const amountChangeHandler = (event) => {
@@ -18,8 +19,12 @@ const CostForm = (props) => {
         setInputDate(event.target.value);
     };
 
+    const categoryChangeHandler = (event) => {
+        setInputCategory(event.target.value);
+    };
+
     const generateSafeId = () => {
-        return Date.now().toString() + '-' + Math.random().toString(36).substring(2, 9);
+        return Date.now().toString();
     };
 
     const submitHandler = (event) => {
@@ -27,38 +32,68 @@ const CostForm = (props) => {
 
         const costData = {
             id: generateSafeId(),
-            description: inputName,
-            cost: inputAmount,
-            date: new Date(inputDate).toLocaleDateString('en-GB', { // Fixed English date format
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric'
-            }),
+            type: inputType,
+            description: inputType === 'expense' ? inputCategory : '', // Опис лише для витрат
+            cost: parseFloat(inputAmount),
+            date: inputDate, // Зберігаємо дату у форматі YYYY-MM-DD
         };
 
         console.log(costData);
 
         props.onSaveCostData(costData);
-        setInputName('');
+        setInputType('expense');
         setInputAmount('');
         setInputDate('');
+        setInputCategory('Food');
     };
 
     return (
         <form onSubmit={submitHandler}>
             <div className="new-cost__controls">
                 <div className="new-cost__control">
-                    <label>Description</label>
-                    <input type="text" value={inputName} onChange={nameChangeHandler} />
+                    <label>Type</label>
+                    <select value={inputType} onChange={typeChangeHandler}>
+                        <option value="expense">Expense</option>
+                        <option value="income">Income</option>
+                    </select>
                 </div>
+
+                {inputType === 'expense' && (
+                    <div className="new-cost__control">
+                        <label>Category</label>
+                        <select value={inputCategory} onChange={categoryChangeHandler}>
+                            <option value="Food">Food</option>
+                            <option value="Transport">Transport</option>
+                            <option value="Housing">Housing</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Others">Others</option>
+                        </select>
+                    </div>
+                )}
+
                 <div className="new-cost__control">
                     <label>Price</label>
-                    <input type="number" value={inputAmount} onChange={amountChangeHandler} min={0.01} step={0.01} />
+                    <input
+                        type="number"
+                        value={inputAmount}
+                        onChange={amountChangeHandler}
+                        min={0.01}
+                        step={0.01}
+                        required
+                    />
                 </div>
                 <div className="new-cost__control">
                     <label>Date</label>
-                    <input type="date" value={inputDate} onChange={dateChangeHandler} min="2000-01-01" max="2024-12-12" />
+                    <input
+                        type="date"
+                        value={inputDate}
+                        onChange={dateChangeHandler}
+                        min="2000-01-01"
+                        max="2024-12-31"
+                        required
+                    />
                 </div>
+
                 <div className="new-cost__actions">
                     <button type="submit">Add</button>
                     <button type="button" onClick={props.onCancel}>Cancel</button>
