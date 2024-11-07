@@ -5,7 +5,7 @@ import React, { useState } from 'react';
     import { ref, set } from 'firebase/database';
     import { getAuth } from 'firebase/auth';
 
-    const NewCost = () => { // Видалили props
+    const NewCost = () => { 
         const [isFormVisible, setIsFormVisible] = useState(false);
 
         const saveCostDataHandler = async (inputCostData) => {
@@ -13,13 +13,12 @@ import React, { useState } from 'react';
 
             const costDataCl = {
                 ...inputCostData,
-                // Дата вже у форматі YYYY-MM-DD, додаткове форматування не потрібне
+                // Дата у форматі YYYY-MM-DD
             };
 
             console.log("Adding new cost:", costDataCl);
 
-            // Видалили виклик props.onAddCost
-            // props.onAddCost(inputCostData);
+         
 
             setIsFormVisible(false);
 
