@@ -50,7 +50,7 @@ import React, { useState } from 'react';
 
         return (
             <div className="new-cost">
-                {!isFormVisible && <button onClick={inputCostDataHandler}>Add Manually</button>}
+                {!isFormVisible && <button onClick={inputCostDataHandler}>ADD MANUALLY</button>}
                 {isFormVisible && <CostForm onSaveCostData={saveCostDataHandler} onCancel={cancelCostHandler} />}
             </div>
         );
