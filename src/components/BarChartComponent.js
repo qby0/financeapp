@@ -10,6 +10,29 @@ import {
     ResponsiveContainer,
 } from 'recharts';
 
+function CustomLegend(props) {
+    const { payload } = props;
+    return (
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            {payload.map((entry, index) => (
+                <div key={`item-${index}`} style={{ display: 'flex', alignItems: 'center', marginLeft: 10 }}>
+                    <span
+                        style={{
+                            display: 'inline-block',
+                            width: 10,
+                            height: 10,
+                            backgroundColor: entry.color,
+                            borderRadius: '50%',
+                            marginRight: 5,
+                        }}
+                    ></span>
+                    <span style={{ color: 'white' }}>{entry.value}</span>
+                </div>
+            ))}
+        </div>
+    );
+  }
+
 const BarChartComponent = ({ costs }) => {
     const monthsOrder = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
                          "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -40,10 +63,10 @@ const BarChartComponent = ({ costs }) => {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="month" />
                 <YAxis />
-                <Tooltip formatter={(value) => [`${value}€`, 'Сума']} />
-                <Legend verticalAlign='bottom' align="right" />
-                <Bar dataKey="income" fill="#82ca9d" name="Income" barSize={15} />
-                <Bar dataKey="expense" fill="#8884d8" name="Expense" barSize={15} />
+                <Tooltip />
+                <Legend content={<CustomLegend />} verticalAlign='bottom' align="right" />
+                <Bar dataKey="income" fill="#ff5588" name="Income" barSize={15} />
+                <Bar dataKey="expense" fill="#c10067" name="Expenses" barSize={15} />
             </BarChart>
         </ResponsiveContainer>
     );
