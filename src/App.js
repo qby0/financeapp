@@ -100,10 +100,11 @@ const App = () => {
 
   return (
       <>
-          <video className="video-background" autoPlay loop muted>
-              <source src="/BLACK1.mp4" type="video/mp4" />
-              Ваш браузер не підтримує відео.
-          </video>
+          {/* Відео на фоні 
+            <video className="video-background" autoPlay loop muted>
+                <source src="/1v_1.mp4" type="video/mp4" />
+                Ваш браузер не підтримує відео.
+            </video>*/}
           <div className="App">
               <Navbar
                   user={user}
