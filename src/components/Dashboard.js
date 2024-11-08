@@ -116,35 +116,35 @@ const Dashboard = ({ user }) => {
 
     return (
         <>
-            {/* Відео на фоні */}
+            {/* Відео на фоні 
             <video className="video-background" autoPlay loop muted>
                 <source src="/1v_1.mp4" type="video/mp4" />
                 Ваш браузер не підтримує відео.
-            </video>
+            </video>*/}
 
             <h1>Expense and budget tracking</h1>
 
             <div className="dashboard-container">
                 <div className="dashboard-difference">
-                    <strong>Difference</strong>
+                    <strong>DIFFERENCE</strong>
                     <br />
                     <span>{difference}€</span>
                 </div>
 
                 <div className="dashboard-row">
                     <div className="dashboard-income">
-                        <span>Income</span>
-                        <span>{totalIncome}€</span>
+                        <span>INCOME</span>
+                        <span>+{totalIncome}€</span>
                     </div>
                     <div className="dashboard-spendings">
-                        <span>Expenses</span>
-                        <span>{totalExpenses}€</span>
+                        <span>EXPENSE</span>
+                        <span>-{totalExpenses}€</span>
                     </div>
                 </div>
             </div>
 
             <div className="dashboard">
-                <button onClick={() => setShowScanner(true)}>Use QR</button>
+                <button onClick={() => setShowScanner(true)}>USE QR</button>
 
                 {showScanner && (
                     <QrScanner onCancel={() => setShowScanner(false)} />
