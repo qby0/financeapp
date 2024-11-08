@@ -93,12 +93,12 @@ const CostForm = (props) => {
                         required
                     />
                 </div>
-
-                <div className="new-cost__actions">
-                    <button type="submit">Add</button>
-                    <button type="button" onClick={props.onCancel}>Cancel</button>
-                </div>
             </div>
+            <div className="new-cost__actions">
+                <button type="submit">Add</button>
+                <button type="button" onClick={props.onCancel}>Cancel</button>
+            </div>
+            
         </form>
     );
 };
