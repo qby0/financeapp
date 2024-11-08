@@ -2,6 +2,7 @@ body, html {
   margin: 0;
   padding: 0;
   height: 100%;
+  background-color: #111010;
 }
 
 .video-background {
@@ -55,7 +56,7 @@ h1{
   
 
   .table-container {
-    width: 75%;
+    width: 76%;
     margin: 0 auto; /* Центрирование таблицы на странице */
   }
   
