@@ -17,7 +17,7 @@ const FinanceSection = ({ onSignUpClick, onLearnMoreClick }) => {
         </div>
       </div>
       <div className="finance-image">
-        <img src="/image1.png" alt="Finances" />
+        <img src="/main1.png" alt="Finances" />
       </div>
     </section>
   );
