@@ -65,9 +65,13 @@
 .finance-image {
     margin-top: 30px; /* Уменьшаем отступ сверху для изображения */
     text-align: center; /* Центрирование изображения */
+    border-color: #bdb4b4;
 }
 
 .finance-image img {
-    max-width: 100%; /* Изображение масштабируется по ширине контейнера */
-    height: auto; /* Пропорции сохраняются */
+    max-width: 70%; 
+    height: auto; 
+    border: 2px solid white; 
+    border-radius: 5px; 
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.2); /* Тень для объёмности */
 }
