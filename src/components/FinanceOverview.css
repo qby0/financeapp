@@ -62,8 +62,11 @@
   
   .detail-item img {
     max-width: 100%; /* Изображения будут адаптироваться под ширину блока */
-    height: auto; /* Пропорции сохраняются */
+    max-height: 8rem; /* Пропорции сохраняются */
     margin-bottom: 20px;
+    border: 2px solid white; 
+    border-radius: 5px; 
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.2); /* Тень для объёмности */
   }
   
   .detail-item h3 {
