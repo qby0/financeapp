@@ -11,6 +11,7 @@ function CostItem(props) {
     const [currentDate, setCurrentDate] = useState(props.date);
     const [currentDescription, setCurrentDescription] = useState(props.description);
     const [currentCost, setCurrentCost] = useState(props.cost);
+    const [currentCategory, setCurrentCategory] = useState(props.category); // Add Category state
     const auth = getAuth();
     const currentUser = auth.currentUser;
 
@@ -22,7 +23,7 @@ function CostItem(props) {
         const day = String(date.getDate()).padStart(2, '0');
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const year = date.getFullYear();
-        return `${year}-${month}-${day}`; // Формат YYYY-MM-DD
+        return `${year}-${month}-${day}`; // Format YYYY-MM-DD
     };
 
     const dateChangeHandler = (event) => {
@@ -32,6 +33,10 @@ function CostItem(props) {
 
     const descriptionChangeHandler = (event) => {
         setCurrentDescription(event.target.value);
+    };
+
+    const categoryChangeHandler = (event) => {
+        setCurrentCategory(event.target.value);
     };
 
     const costChangeHandler = (event) => {
@@ -48,15 +53,19 @@ function CostItem(props) {
             const userId = currentUser.uid;
             const costRef = ref(database, `users/${userId}/purchases/${props.id}`);
         
-            // Обновляем все данные в базе данных
-            update(costRef, { 
+            // Update all data in the database
+            const updatedData = { 
                 date: formattedDate,
-                description: currentDescription,
-                cost: currentCost 
-            })
+                cost: parseFloat(currentCost),
+                type: props.type,
+                category: currentCategory,
+                description: props.type === 'expense' ? currentDescription : '',
+            };
+
+            update(costRef, updatedData)
             .then(() => {
                 console.log('Data updated successfully!');
-                setEditMode(false); // Выход из режима редактирования после сохранения
+                setEditMode(false); // Exit edit mode after saving
             })
             .catch((error) => {
                 console.error('Error updating data:', error);
@@ -69,17 +78,18 @@ function CostItem(props) {
             const userId = currentUser.uid;
             const costRef = ref(database, `users/${userId}/purchases/${props.id}`);
 
-            // Удаляем данные из базы данных
+            // Remove data from the database
             remove(costRef)
             .then(() => {
                 console.log('Data removed successfully!');
-                // Опціонально: додайте логіку для видалення елемента з UI, якщо потрібно
+                // Optionally: Add logic to remove the item from UI
             })
             .catch((error) => {
                 console.error('Error removing data:', error);
             });
         }
     };
+
     return (
         <Card className="cost-item">
             {editMode ? (
@@ -90,12 +100,26 @@ function CostItem(props) {
                         onChange={dateChangeHandler} 
                         className="edit-input"
                     />
-                    <input 
-                        type="text" 
-                        value={currentDescription} 
-                        onChange={descriptionChangeHandler} 
-                        className="edit-input"
-                    />
+                    {props.type === 'expense' && (
+                        <>
+                            <input 
+                                type="text" 
+                                value={currentDescription} 
+                                onChange={descriptionChangeHandler} 
+                                className="edit-input"
+                            />
+                            <div className="new-cost__control">
+                                <label>Category</label>
+                                <select value={currentCategory} onChange={categoryChangeHandler} className="edit-input">
+                                    <option value="Food">Food</option>
+                                    <option value="Transport">Transport</option>
+                                    <option value="Housing">Housing</option>
+                                    <option value="Entertainment">Entertainment</option>
+                                    <option value="Others">Others</option>
+                                </select>
+                            </div>
+                        </>
+                    )}
                     <input 
                         type="number" 
                         value={currentCost} 
@@ -112,10 +136,10 @@ function CostItem(props) {
                     <CostDate date={currentDate} />
 
                     <div className="cost-item__description">
-                        <h2>{currentDescription}</h2>
+                        <h2>{props.type === 'expense' ? props.description : props.category}</h2>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                        {/* Умовне відображення знака */}
+                        {/* Conditional display of sign */}
                         <div className={`cost-item__price ${props.type}`}>
                             {props.type === 'expense' ? `- ${Math.abs(currentCost)}€` : `+ ${currentCost}€`}
                         </div>
