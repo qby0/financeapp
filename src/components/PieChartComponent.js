@@ -1,10 +1,11 @@
+// ExpensePieChart.js
 import React from 'react';
 import { PieChart, Pie, Cell, Tooltip } from 'recharts';
 
 const ExpensePieChart = ({ costs }) => {
     // Групуємо витрати за категоріями, з категорією "Others" для не визначених
     const groupedData = costs.reduce((acc, curr) => {
-        let category = curr.description;
+        let category = curr.category;
         const predefinedCategories = ["Food", "Transport", "Housing", "Entertainment"];
 
         if (!predefinedCategories.includes(category)) {
@@ -32,25 +33,22 @@ const ExpensePieChart = ({ costs }) => {
             <div style={{ marginRight: '20px', fontFamily: 'Arial, sans-serif' }}>
                 {data.map((entry, index) => (
                     <div key={`data-${index}`} style={{ marginBottom: '10px', display: 'flex', alignItems: 'center' }}>
-                        {/* Колірна крапка */}
                         <span
                             style={{
                                 display: 'inline-block',
                                 width: 12,
                                 height: 12,
-                                backgroundColor: entry.name === 'Others' ? '#FFBB28' : COLORS[index % COLORS.length],
+                                backgroundColor: COLORS[index % COLORS.length],
                                 borderRadius: '50%',
                                 marginRight: 8,
                             }}
                         />
-                        {/* Назва категорії */}
                         <span style={{ color: 'white', fontWeight: 'bold' }}>{entry.name}</span>
-                        {/* Сума витрат */}
                         <span style={{ color: 'white', marginLeft: '5px' }}>{entry.value}€</span>
                     </div>
                 ))}
             </div>
-            {/* Круговий графік */}
+            {/* Кругова діаграма */}
             <PieChart width={330} height={330}>
                 <Pie
                     data={data}
@@ -64,7 +62,7 @@ const ExpensePieChart = ({ costs }) => {
                     label
                 >
                     {data.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.name === 'Others' ? '#FFBB28' : COLORS[index % COLORS.length]} />
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                 </Pie>
                 <Tooltip />
