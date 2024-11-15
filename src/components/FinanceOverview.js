@@ -16,7 +16,7 @@ const FinanceOverview = () => {
 
       <div className="overview-details">
         <div className="detail-item">
-          <img src="/image1.jpg" alt="Total Sales" />
+          <img src="/diff.png" alt="Total Sales" />
           <h3>Total View</h3>
           <p>
             The sum of all expenses and receipts displays the overall balance of your finances,
@@ -24,7 +24,7 @@ const FinanceOverview = () => {
           </p>
         </div>
         <div className="detail-item">
-          <img src="/image3.jpg" alt="Cost Classification" />
+          <img src="/piegraph.png" alt="Cost Classification" />
           <h3>Cost Classification</h3>
           <p>
             Categorizing your expenses makes it easier to track your spending, helping you control
@@ -32,7 +32,7 @@ const FinanceOverview = () => {
           </p>
         </div>
         <div className="detail-item">
-          <img src="/image2.jpg" alt="Monthly Expense Schedule" />
+          <img src="/monthly.png" alt="Monthly Expense Schedule" />
           <h3>Monthly Expense Schedule</h3>
           <p>
             A graph of spending by month visualizes your spending patterns, helping you identify
