@@ -1,10 +1,11 @@
+// Dashboard.js
 import React, { useState, useEffect } from 'react';
 import Costs from "./Costs";
 import NewCost from "./NewCost/NewCost";
 import QrScanner from "./QrScanner";
 import Footer from './Footer';
 import './Dashboard.css';
-import ExpensePieChart from './PieChartComponent';
+import ExpensePieChart from './PieChartComponent'; // Оновлений імпорт
 import BarChartComponent from './BarChartComponent';
 import LineChartComponent from './LineChartComponent';
 import { ref, onValue } from 'firebase/database';
@@ -16,7 +17,7 @@ const Dashboard = ({ user }) => {
     const [selectedYear, setSelectedYear] = useState("2024");
     const [selectedMonth, setSelectedMonth] = useState(""); // Стан для місяця
 
-    // Завантаження даних з Firebase при завантаженні компонента
+    // Завантаження даних з Firebase при завантаженні компоненту або зміні користувача
     useEffect(() => {
         if (!user) return;
 
@@ -26,17 +27,18 @@ const Dashboard = ({ user }) => {
             const loadedCosts = [];
 
             for (let key in data) {
-                // Розбиваємо дату на рік, місяць, день
+                // Розділення дати на рік, місяць, день
                 const dateString = data[key].date;
                 const [year, month, day] = dateString.split('-').map(Number);
-                const date = new Date(year, month - 1, day); // Місяць від 0 до 11
+                const date = new Date(year, month - 1, day); // Місяці починаються з 0
 
                 loadedCosts.push({
                     id: data[key].id,
-                    description: data[key].description,
-                    cost: parseFloat(data[key].cost), // Перетворюємо на число
-                    date: date,
                     type: data[key].type,
+                    category: data[key].category || '',       // Завантаження Категорії
+                    description: data[key].description || '', // Завантаження Опису
+                    cost: parseFloat(data[key].cost),         // Перетворення на число
+                    date: date,
                 });
             }
 
@@ -46,64 +48,29 @@ const Dashboard = ({ user }) => {
         return () => unsubscribe();
     }, [user]);
 
-    const yearChangeHandler = (year) => {
-        setSelectedYear(year);
+    // Функція для фільтрації витрат за типом, роком та місяцем
+    const filterCosts = (type) => {
+        return costs.filter(cost => {
+            const costYear = cost.date.getFullYear().toString();
+            const costMonth = ("0" + (cost.date.getMonth() + 1)).slice(-2);
+
+            const yearMatch = costYear === selectedYear;
+            const monthMatch = selectedMonth ? costMonth === selectedMonth : true;
+
+            return cost.type === type && yearMatch && monthMatch;
+        });
     };
 
-    const monthChangeHandler = (month) => {
-        setSelectedMonth(month);
-    };
-
-    // Фільтрація за роком та місяцем для графіків
-    const pieChartCosts = costs.filter(cost => {
-        const costYear = cost.date.getFullYear().toString();
-        const costMonth = ("0" + (cost.date.getMonth() + 1)).slice(-2);
-
-        const yearMatch = costYear === selectedYear;
-        const monthMatch = selectedMonth ? costMonth === selectedMonth : true;
-
-        return cost.type === 'expense' && yearMatch && monthMatch;
-    });
-
-    // Виправлення: фільтруємо дані для BarChartComponent, включаючи всі транзакції за рік
-    const barChartCosts = costs.filter(cost => {
-        const costYear = cost.date.getFullYear().toString();
-
-        const yearMatch = costYear === selectedYear;
-
-        return yearMatch; // Повертаємо всі транзакції за обраний рік
-    });
-
-    // Фільтрація для LineChartComponent (можете залишити як є)
-    const lineChartCosts = costs.filter(cost => {
-        const costYear = cost.date.getFullYear().toString();
-        const costMonth = ("0" + (cost.date.getMonth() + 1)).slice(-2);
-
-        const yearMatch = costYear === selectedYear;
-        const monthMatch = selectedMonth ? costMonth === selectedMonth : true;
-
-        return (cost.type === 'income' || cost.type === 'expense') && yearMatch && monthMatch;
-    });
-
-    // Додамо консольні логи для перевірки
-    useEffect(() => {
-        console.log("All Costs:", costs);
-        console.log("Pie Chart Costs:", pieChartCosts);
-        console.log("Bar Chart Costs:", barChartCosts);
-        console.log("Line Chart Costs:", lineChartCosts);
-    }, [costs, pieChartCosts, barChartCosts, lineChartCosts]);
-
-    // Обчислення загальних доходів та витрат
-    const totalIncome = costs
-        .filter(cost => cost.type === 'income' && cost.date.getFullYear().toString() === selectedYear)
+    // Обчислення загального доходу та витрат на основі вибраних фільтрів
+    const totalIncome = filterCosts('income')
         .reduce((acc, curr) => acc + curr.cost, 0);
-        const totalExpenses = costs
-        .filter(cost => cost.type === 'expense' && cost.date.getFullYear().toString() === selectedYear)
+
+    const totalExpenses = filterCosts('expense')
         .reduce((acc, curr) => acc + Math.abs(curr.cost), 0);
 
     const difference = totalIncome - totalExpenses;
 
-    // Визначаємо filteredCosts для компонента Costs
+    // Фільтрація витрат для компонента Costs
     const filteredCosts = costs.filter(cost => {
         const costYear = cost.date.getFullYear().toString();
         const costMonth = ("0" + (cost.date.getMonth() + 1)).slice(-2);
@@ -114,31 +81,80 @@ const Dashboard = ({ user }) => {
         return (cost.type === 'income' || cost.type === 'expense') && yearMatch && monthMatch;
     });
 
+    // Фільтр витрат для кругової діаграми
+    const pieChartCosts = costs.filter(cost => {
+        const costYear = cost.date.getFullYear().toString();
+        const costMonth = ("0" + (cost.date.getMonth() + 1)).slice(-2);
+
+        const yearMatch = costYear === selectedYear;
+        const monthMatch = selectedMonth ? costMonth === selectedMonth : true;
+
+        return cost.type === 'expense' && yearMatch && monthMatch;
+    });
+
+    // Фільтр витрат для бар-чарту
+    const barChartCosts = costs.filter(cost => {
+        const costYear = cost.date.getFullYear().toString();
+
+        const yearMatch = costYear === selectedYear;
+
+        return yearMatch; // Повертає всі транзакції за вибраний рік
+    });
+
+    // Фільтр витрат для лінійного чарту
+    const lineChartCosts = costs.filter(cost => {
+        const costYear = cost.date.getFullYear().toString();
+        const costMonth = ("0" + (cost.date.getMonth() + 1)).slice(-2);
+
+        const yearMatch = costYear === selectedYear;
+        const monthMatch = selectedMonth ? costMonth === selectedMonth : true;
+
+        return (cost.type === 'income' || cost.type === 'expense') && yearMatch && monthMatch;
+    });
+
+    // Логи для налагодження
+    useEffect(() => {
+        console.log("All Costs:", costs);
+        console.log("Pie Chart Costs:", pieChartCosts);
+        console.log("Bar Chart Costs:", barChartCosts);
+        console.log("Line Chart Costs:", lineChartCosts);
+    }, [costs, pieChartCosts, barChartCosts, lineChartCosts]);
+
+    // Обробники зміни року та місяця
+    const yearChangeHandler = (year) => {
+        setSelectedYear(year);
+    };
+
+    const monthChangeHandler = (month) => {
+        setSelectedMonth(month);
+    };
+
     return (
         <>
-            {/* Відео на фоні 
+            {/* Фонове відео (закоментовано)
             <video className="video-background" autoPlay loop muted>
                 <source src="/1v_1.mp4" type="video/mp4" />
                 Ваш браузер не підтримує відео.
-            </video>*/}
+            </video>
+            */}
 
-            <h1>Expense and budget tracking</h1>
+            <h1>Expense and Budget Tracking</h1>
 
             <div className="dashboard-container">
                 <div className="dashboard-difference">
                     <strong>DIFFERENCE</strong>
                     <br />
-                    <span>{difference}€</span>
+                    <span>{difference.toFixed(2)}€</span>
                 </div>
 
                 <div className="dashboard-row">
                     <div className="dashboard-income">
                         <span>INCOME</span>
-                        <span>+{totalIncome}€</span>
+                        <span>+{totalIncome.toFixed(2)}€</span>
                     </div>
                     <div className="dashboard-spendings">
                         <span>EXPENSE</span>
-                        <span>-{totalExpenses}€</span>
+                        <span>-{totalExpenses.toFixed(2)}€</span>
                     </div>
                 </div>
             </div>
@@ -151,7 +167,7 @@ const Dashboard = ({ user }) => {
                 )}
             </div>
 
-            <NewCost /> {/* Без пропса onAddCost */}
+            <NewCost /> {/* Переконайтеся, що NewCost обробляє Description належним чином */}
 
             <br />
             <div className="table-container">
@@ -159,17 +175,22 @@ const Dashboard = ({ user }) => {
                     <tbody>
                         <tr>
                             <td className="chart-cell" colSpan={2}>
+                                {/* ExpensePieChart тепер використовує Category */}
                                 <ExpensePieChart costs={pieChartCosts} />
                             </td>
                         </tr>
                         <tr>
                             <td className="chart-cell" colSpan={2}>
-                                <BarChartComponent costs={barChartCosts} /> {/* Передаємо всі транзакції за рік */}
+                                <BarChartComponent costs={barChartCosts} /> {/* Передає всі транзакції за рік */}
                             </td>
                         </tr>
                         <tr>
                             <td className="chart-cell" colSpan={2}>
-                                <LineChartComponent costs={lineChartCosts} selectedYear={selectedYear} selectedMonth={selectedMonth} />
+                                <LineChartComponent
+                                    costs={lineChartCosts}
+                                    selectedYear={selectedYear}
+                                    selectedMonth={selectedMonth}
+                                />
                             </td>
                         </tr>
                     </tbody>
@@ -177,7 +198,7 @@ const Dashboard = ({ user }) => {
             </div>
 
             <Costs
-                costs={filteredCosts} // Передаємо відфільтровані витрати
+                costs={filteredCosts} // Передає фільтровані витрати
                 selectedYear={selectedYear}
                 selectedMonth={selectedMonth}
                 onChangeYear={yearChangeHandler}
