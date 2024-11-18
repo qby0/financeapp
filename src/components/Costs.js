@@ -1,7 +1,8 @@
+// Costs.js
 import React from 'react';
 import CostItem from './CostItem';
 import Card from './Card';
-import CostsFilter from '../components/NewCost/CostsFilter';
+import CostsFilter from '../components/NewCost/CostsFilter'; // Перевірте шлях імпорту
 import './Costs.css';
 
 function Costs(props) {
@@ -14,7 +15,7 @@ function Costs(props) {
         const yearMatch = costYear === selectedYear;
         const monthMatch = selectedMonth ? costMonth === selectedMonth : true;
 
-        return (cost.type === 'expense' || cost.type === 'income') && yearMatch && monthMatch;
+        return (cost.type === 'income' || cost.type === 'expense') && yearMatch && monthMatch;
     });
 
     return (
@@ -37,6 +38,7 @@ function Costs(props) {
                             description={cost.description}
                             cost={cost.cost}
                             type={cost.type}
+                            category={cost.category} // Передаємо Category
                         />
                     ))
                 )}
