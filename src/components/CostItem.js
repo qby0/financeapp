@@ -1,3 +1,4 @@
+// CostItem.js
 import './CostItem.css';
 import CostDate from './CostDate';
 import Card from './Card';
@@ -11,7 +12,7 @@ function CostItem(props) {
     const [currentDate, setCurrentDate] = useState(props.date);
     const [currentDescription, setCurrentDescription] = useState(props.description);
     const [currentCost, setCurrentCost] = useState(props.cost);
-    const [currentCategory, setCurrentCategory] = useState(props.category); // Add Category state
+    const [currentCategory, setCurrentCategory] = useState(props.category || 'Food'); // Категорія для витрат
     const auth = getAuth();
     const currentUser = auth.currentUser;
 
@@ -23,7 +24,7 @@ function CostItem(props) {
         const day = String(date.getDate()).padStart(2, '0');
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const year = date.getFullYear();
-        return `${year}-${month}-${day}`; // Format YYYY-MM-DD
+        return `${year}-${month}-${day}`; // Формат YYYY-MM-DD
     };
 
     const dateChangeHandler = (event) => {
@@ -46,26 +47,26 @@ function CostItem(props) {
     const saveChangesHandler = () => {
         const formattedDate = formatDate(currentDate);
         
-        const auth = getAuth();
-        const currentUser = auth.currentUser;
-
         if (currentUser) {
             const userId = currentUser.uid;
             const costRef = ref(database, `users/${userId}/purchases/${props.id}`);
         
-            // Update all data in the database
+            // Оновлюємо всі дані в базі даних
             const updatedData = { 
                 date: formattedDate,
                 cost: parseFloat(currentCost),
                 type: props.type,
-                category: currentCategory,
-                description: props.type === 'expense' ? currentDescription : '',
+                category: props.type === 'expense' ? currentCategory : '', // Категорія тільки для витрат
+                description: currentDescription, // Опис для всіх типів
             };
+
+            // Логування для налагодження
+            console.log('Updated Data:', updatedData);
 
             update(costRef, updatedData)
             .then(() => {
                 console.log('Data updated successfully!');
-                setEditMode(false); // Exit edit mode after saving
+                setEditMode(false); // Вихід з режиму редагування після збереження
             })
             .catch((error) => {
                 console.error('Error updating data:', error);
@@ -78,11 +79,11 @@ function CostItem(props) {
             const userId = currentUser.uid;
             const costRef = ref(database, `users/${userId}/purchases/${props.id}`);
 
-            // Remove data from the database
+            // Видаляємо дані з бази даних
             remove(costRef)
             .then(() => {
                 console.log('Data removed successfully!');
-                // Optionally: Add logic to remove the item from UI
+                // Опціонально: додайте логіку для видалення елемента з UI, якщо потрібно
             })
             .catch((error) => {
                 console.error('Error removing data:', error);
@@ -100,25 +101,27 @@ function CostItem(props) {
                         onChange={dateChangeHandler} 
                         className="edit-input"
                     />
+                    <div className="new-cost__control">
+                        <label>Description</label>
+                        <input 
+                            type="text" 
+                            value={currentDescription} 
+                            onChange={descriptionChangeHandler} 
+                            className="edit-input"
+                            required
+                        />
+                    </div>
                     {props.type === 'expense' && (
-                        <>
-                            <input 
-                                type="text" 
-                                value={currentDescription} 
-                                onChange={descriptionChangeHandler} 
-                                className="edit-input"
-                            />
-                            <div className="new-cost__control">
-                                <label>Category</label>
-                                <select value={currentCategory} onChange={categoryChangeHandler} className="edit-input">
-                                    <option value="Food">Food</option>
-                                    <option value="Transport">Transport</option>
-                                    <option value="Housing">Housing</option>
-                                    <option value="Entertainment">Entertainment</option>
-                                    <option value="Others">Others</option>
-                                </select>
-                            </div>
-                        </>
+                        <div className="new-cost__control">
+                            <label>Category</label>
+                            <select value={currentCategory} onChange={categoryChangeHandler} className="edit-input">
+                                <option value="Food">Food</option>
+                                <option value="Transport">Transport</option>
+                                <option value="Housing">Housing</option>
+                                <option value="Entertainment">Entertainment</option>
+                                <option value="Others">Others</option>
+                            </select>
+                        </div>
                     )}
                     <input 
                         type="number" 
@@ -127,6 +130,7 @@ function CostItem(props) {
                         min="0.01" 
                         step="0.01" 
                         className="edit-input"
+                        required
                     />
                     <button onClick={saveChangesHandler} className="save">Save</button>
                     <button onClick={toggleEditMode} className="cancel">Cancel</button>
@@ -136,10 +140,12 @@ function CostItem(props) {
                     <CostDate date={currentDate} />
 
                     <div className="cost-item__description">
-                        <h2>{props.type === 'expense' ? props.description : props.category}</h2>
+                        <h2>{props.description}</h2>
+                        {/* Видаляємо відображення категорії */}
+                        {/* Якщо потрібно додати додаткову інформацію, можна зробити це тут */}
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                        {/* Conditional display of sign */}
+                        {/* Умовне відображення знака */}
                         <div className={`cost-item__price ${props.type}`}>
                             {props.type === 'expense' ? `- ${Math.abs(currentCost)}€` : `+ ${currentCost}€`}
                         </div>
@@ -156,6 +162,7 @@ function CostItem(props) {
             )}
         </Card>
     );
+
 }
 
 export default CostItem;
