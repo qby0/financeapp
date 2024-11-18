@@ -5,7 +5,7 @@ import NewCost from "./NewCost/NewCost";
 import QrScanner from "./QrScanner";
 import Footer from './Footer';
 import './Dashboard.css';
-import ExpensePieChart from './PieChartComponent'; // Оновлений імпорт
+import ExpensePieChart from './PieChartComponent'; // Переконайтеся, що файл називається правильно
 import BarChartComponent from './BarChartComponent';
 import LineChartComponent from './LineChartComponent';
 import { ref, onValue } from 'firebase/database';
@@ -35,9 +35,9 @@ const Dashboard = ({ user }) => {
                 loadedCosts.push({
                     id: data[key].id,
                     type: data[key].type,
-                    category: data[key].category || '',       // Завантаження Категорії
-                    description: data[key].description || '', // Завантаження Опису
-                    cost: parseFloat(data[key].cost),         // Перетворення на число
+                    category: data[key].type === 'expense' ? (data[key].category || 'Others') : '', // Категорія лише для витрат
+                    description: data[key].description || '', // Опис для всіх типів
+                    cost: parseFloat(data[key].cost), // Перетворення на число
                     date: date,
                 });
             }
@@ -81,18 +81,10 @@ const Dashboard = ({ user }) => {
         return (cost.type === 'income' || cost.type === 'expense') && yearMatch && monthMatch;
     });
 
-    // Фільтр витрат для кругової діаграми
-    const pieChartCosts = costs.filter(cost => {
-        const costYear = cost.date.getFullYear().toString();
-        const costMonth = ("0" + (cost.date.getMonth() + 1)).slice(-2);
+    // Фільтр витрат для кругової діаграми (тільки витрати)
+    const pieChartCosts = filterCosts('expense');
 
-        const yearMatch = costYear === selectedYear;
-        const monthMatch = selectedMonth ? costMonth === selectedMonth : true;
-
-        return cost.type === 'expense' && yearMatch && monthMatch;
-    });
-
-    // Фільтр витрат для бар-чарту
+    // Фільтр витрат для бар-чарту (всі транзакції за вибраний рік)
     const barChartCosts = costs.filter(cost => {
         const costYear = cost.date.getFullYear().toString();
 
@@ -101,7 +93,7 @@ const Dashboard = ({ user }) => {
         return yearMatch; // Повертає всі транзакції за вибраний рік
     });
 
-    // Фільтр витрат для лінійного чарту
+    // Фільтр витрат для лінійного чарту (всі транзакції за вибраний рік і місяць)
     const lineChartCosts = costs.filter(cost => {
         const costYear = cost.date.getFullYear().toString();
         const costMonth = ("0" + (cost.date.getMonth() + 1)).slice(-2);
@@ -198,7 +190,7 @@ const Dashboard = ({ user }) => {
             </div>
 
             <Costs
-                costs={filteredCosts} // Передає фільтровані витрати
+                costs={filteredCosts} // Передає фільтровані витрати та доходи
                 selectedYear={selectedYear}
                 selectedMonth={selectedMonth}
                 onChangeYear={yearChangeHandler}
@@ -207,6 +199,7 @@ const Dashboard = ({ user }) => {
             <Footer />
         </>
     );
-}
+
+};
 
 export default Dashboard;
