@@ -3,7 +3,7 @@ import React from 'react';
 import { PieChart, Pie, Cell, Tooltip } from 'recharts';
 
 const ExpensePieChart = ({ costs }) => {
-    // Групуємо витрати за категоріями, з категорією "Others" для не визначених
+    // Групуємо витрати за категоріями, з категорією "Others" для невизначених
     const groupedData = costs.reduce((acc, curr) => {
         let category = curr.category;
         const predefinedCategories = ["Food", "Transport", "Housing", "Entertainment"];
