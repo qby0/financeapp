@@ -46,6 +46,10 @@ function QrScanner({ onCancel }) {
         body: JSON.stringify({ qrCodeData }),
       });
 
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
       const data = await response.json();
       if (data.success) {
         setPurchaseInfo(data.data);
@@ -67,7 +71,7 @@ function QrScanner({ onCancel }) {
   };
 
   return (
-    <div class ="qr-scanner">
+    <div className="qr-scanner">
       {!scannedCode ? (
         <div>
           <h3>Scan your QR Code</h3>
