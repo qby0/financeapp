@@ -1,0 +1,56 @@
+.achievements-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Три элемента в строке */
+    gap: 20px; /* Промежуток между карточками */
+    justify-items: center; /* Центровка карточек */
+  }
+  
+  
+  
+  .achievement-card {
+    position: relative; /* Описание будет позиционироваться относительно карточки */
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+    width: 100%;
+    max-width: 150px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  
+  .achievement-card img {
+    width: 100%; /* Изображение занимает всю ширину карточки */
+    height: auto; /* Высота автоматически подстраивается */
+    border-radius: 5px; /* Закругленные углы */
+    object-fit: contain; /* Сохраняем пропорции изображения */
+  }
+  
+  .tooltip {
+    position: absolute;
+    top: -40px; /* Расположить описание над карточкой */
+    left: 50%;
+    transform: translateX(-50%); /* Центрируем описание */
+    background-color: rgba(0, 0, 0, 0.9); /* Темный фон */
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    text-align: center;
+    white-space: nowrap; /* Не переносить текст */
+    opacity: 0; /* Скрыто по умолчанию */
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 100; /* Увеличиваем приоритет отображения */
+  }
+  
+  /* Показ описания при наведении */
+  .achievement-card:hover .tooltip {
+    opacity: 1; /* Показываем описание */
+    transform: translateX(-50%) translateY(-10px); /* Легкий подъем */
+  }
+  
+  
+  
+  
+  
