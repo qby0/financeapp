@@ -7,7 +7,7 @@ const achievements = [
     { id: 3, imgSrc: '/master.png', label: 'Usage Master', description: 'You’ve mastered it all!' },
     { id: 4, imgSrc: '/ClosedPig.png', label: 'Food Lover', description: 'Life tastes better with food.' },
     { id: 5, imgSrc: '/ClosedPig.png', label: 'Travel Buddy', description: 'Adventure is your middle name!' },
-    { id: 6, imgSrc: '/ClosedPig.png', label: 'Card Traveler', description: 'Your card loves exploring too!' }
+    { id: 6, imgSrc: '/ClosedPig.png', label: 'Opening of Worlds', description: 'It seems you really love traveling!' }
   ];
   
 
