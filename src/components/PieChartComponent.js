@@ -49,7 +49,7 @@ const ExpensePieChart = ({ costs }) => {
                 ))}
             </div>
             {/* Кругова діаграма */}
-            <PieChart width={330} height={330}>
+            <PieChart width={500} height={400}>
                 <Pie
                     data={data}
                     dataKey="value"
