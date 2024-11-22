@@ -149,14 +149,15 @@ const Dashboard = ({ user }) => {
                 </div>
             </div>
 
-            <div className="dashboard">
+            {/*<div className="dashboard">
                 <button onClick={() => setShowScanner(true)}>USE QR</button>
 
                 {showScanner && (
                     <QrScanner onCancel={() => setShowScanner(false)} />
                 )}
 
-            </div>
+            </div>*/}
+            <QrScanner />
 
             <QrUpload />
 
