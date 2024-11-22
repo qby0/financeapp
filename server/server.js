@@ -30,10 +30,64 @@ const upload = multer({ dest: path.join(__dirname, 'uploads') });
 app.use(cors());
 app.use(bodyParser.json());
 
+// Маршрут для работы с QR-сценарием с сайта
+app.post('/fetch-purchase-info', async (req, res) => {
+    const qrCodeData = req.body.qrCodeData;
+
+    if (!qrCodeData) {
+        return res.status(400).send({ error: 'QR code data is required' });
+    }
+
+    try {
+        const browser = await puppeteer.launch({ headless: true });
+        const page = await browser.newPage();
+
+        await page.goto('https://opd.financnasprava.sk/#!/check');
+        await page.type('#input-receipt-id', qrCodeData);
+        await page.click('#search-button');
+
+        await page.waitForSelector('.receipt-detail-body');
+        const result = await page.$eval('.receipt-detail-body', el => el.innerText);
+
+        const obchodneMenoMatch = result.match(/Obchodné meno\s*([^\n]+)/);
+        const datumCasVyhotoveniaMatch = result.match(/Dátum a čas vyhotovenia:\s*([^\n]+)/);
+        const celkovaSumaDokladuMatch = result.match(/Celková suma dokladu:\s*([^\n]+)/);
+
+        const description = obchodneMenoMatch ? obchodneMenoMatch[1].trim() : null;
+        let date = datumCasVyhotoveniaMatch ? datumCasVyhotoveniaMatch[1].trim() : null;
+        if (date) {
+            date = date.split(' ')[0].replace(/\./g, '-'); // Убираем время, оставляем дату и меняем формат
+        }
+
+
+        let cost = celkovaSumaDokladuMatch ? celkovaSumaDokladuMatch[1].trim() : null;
+        if (cost) {
+            cost = cost.replace('€', '').trim(); // Убираем символ евро
+        }
+
+        const purchaseId = Date.now().toString();
+        const type = 'expense'
+
+
+        const costInfoQr = {
+            date: date,
+            description: description,
+            cost: cost,
+            id: purchaseId,
+            type: type,
+        };
+
+        await browser.close();
+
+        res.json({ success: true, data: costInfoQr });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).send({ success: false, message: 'Error fetching purchase info' });
+    }
+});
+
 // Маршрут для обработки загрузки QR-кода
 app.post('/upload', upload.single('qrImage'), async (req, res) => {
-    console.log('Received file:', req.file);
-
     if (!req.file) {
         console.log('No file received');
         return res.status(400).send('No file uploaded');
@@ -42,25 +96,28 @@ app.post('/upload', upload.single('qrImage'), async (req, res) => {
     const filePath = req.file.path;
 
     try {
-        // Создаем объект FormData
+        // Создаём объект FormData для отправки файла на API
         const formData = new FormData();
-        formData.append('file', fs.createReadStream(filePath)); // Добавляем файл
+        formData.append('file', fs.createReadStream(filePath));
 
-        // Отправляем запрос на альтернативное API для декодирования QR-кода
+        // Отправляем запрос на API для декодирования QR-кода
         const response = await axios.post('https://api.qrserver.com/v1/read-qr-code/', formData, {
             headers: formData.getHeaders(),
         });
 
-        if (response.data && response.data[0] && response.data[0].symbol[0].data) {
-            const qrCodeData = response.data[0].symbol[0].data;
-            console.log('Decoded QR Code:', qrCodeData);
+        // Удаляем временный файл после успешной обработки
+        fs.unlinkSync(filePath);
 
-            // Теперь, когда у нас есть данные из QR-кода, мы выполняем логику, как в первом случае
+        // Проверяем, что API вернул данные
+        if (response.data && response.data[0] && response.data[0].symbol[0].data) {
+            const qrCodeUpload = response.data[0].symbol[0].data;
+
+            // Используем Puppeteer для обработки данных
             const browser = await puppeteer.launch({ headless: true });
             const page = await browser.newPage();
 
             await page.goto('https://opd.financnasprava.sk/#!/check');
-            await page.type('#input-receipt-id', qrCodeData);
+            await page.type('#input-receipt-id', qrCodeUpload);
             await page.click('#search-button');
 
             await page.waitForSelector('.receipt-detail-body');
@@ -73,57 +130,45 @@ app.post('/upload', upload.single('qrImage'), async (req, res) => {
             const description = obchodneMenoMatch ? obchodneMenoMatch[1].trim() : null;
             let date = datumCasVyhotoveniaMatch ? datumCasVyhotoveniaMatch[1].trim() : null;
             if (date) {
-                date = date.split(' ')[0]; // Оставляем только дату
-                const [day, month, year] = date.split('.'); // Разделяем по точке
-                date = `${day}-${month}-${year}`; // Формируем дату в формате DD-MM-YYYY
+                date = date.split(' ')[0].replace(/\./g, '-'); // Убираем время, оставляем дату и меняем формат
             }
-
             let cost = celkovaSumaDokladuMatch ? celkovaSumaDokladuMatch[1].trim() : null;
             if (cost) {
                 cost = cost.replace('€', '').trim(); // Убираем символ евро
             }
 
             const purchaseId = Date.now().toString();
-            
+            const type = 'expense'
+
+
             const costInfoQr = {
                 date: date,
                 description: description,
                 cost: cost,
                 id: purchaseId,
+                type: type,
             };
-
-            console.log(costInfoQr);
-
-            await set(ref(database, 'purchases/' + purchaseId), costInfoQr)
-                .then(() => {
-                    console.log("Data saved to Firebase");
-                })
-                .catch((error) => {
-                    console.error("Error saving data to Firebase:", error); 
-                });
 
             await browser.close();
 
-            res.send({ success: true, data: result });
+            // Возвращаем данные клиенту
+            return res.json({ success: true, data: costInfoQr });
         } else {
             console.log('No decoded text found in API response');
-            res.json({ decodedText: 'No QR code found' });
+            return res.status(400).json({ success: false, message: 'No QR code found' });
         }
-
-        // Удаляем временный файл после успешной обработки
-        fs.unlinkSync(filePath);
-
     } catch (error) {
-        console.error('Error decoding QR code:', error.message);
+        console.error('Error processing QR code:', error.message);
 
         // Удаляем временный файл при ошибке
         if (req.file && fs.existsSync(req.file.path)) {
             fs.unlinkSync(req.file.path);
         }
 
-        res.status(500).send('Error decoding QR code');
+        return res.status(500).send('Error processing QR code');
     }
 });
+
 
 // Запуск сервера
 const PORT = process.env.PORT || 5000;
