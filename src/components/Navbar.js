@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import './Navbar.css';
 import AchievementsModal from './AchievementsModal'; // Импорт нового модального окна
 
@@ -21,13 +20,11 @@ const Navbar = ({ user, onSignUpClick, onLoginClick, onLogoutClick }) => {
           <img src="/logo.png" alt="Logo" className="logo-image" />
         </div>
       </div>
-      <ul className="navbar-links">
-        <li><Link to="/about"></Link></li>
-        <li><Link to="/features"></Link></li>
-      </ul>
       <div className="navbar-buttons">
         {user ? (
           <>
+            <img src="/avatar.png" alt="lvl" className="avatar-image" style={{ border: "2px solid yellow" }} />
+            <img src="/avatar.png" alt="ava" className="avatar-image" />
             <div className="navbar-nickname" onClick={handleAchievementsClick}>
               {user.nickname || user.email}
             </div>
