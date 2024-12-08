@@ -1,7 +1,38 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './Footer.css';
 
-const Footer = ({ onSignUpClick, onContactClick, onUserGuideClick }) => { // Передаем функцию для открытия модального окна User Guide
+const Footer = ({ onSignUpClick, onContactClick, onUserGuideClick }) => {
+  const [isImageBackground, setIsImageBackground] = useState(false); // Состояние для переключения фона
+
+  // Функция для переключения фона
+  const toggleBackground = () => {
+    const newBackgroundState = !isImageBackground;
+    setIsImageBackground(newBackgroundState);
+    updateBackground(newBackgroundState);
+
+    // Сохраняем состояние в localStorage
+    localStorage.setItem('isImageBackground', JSON.stringify(newBackgroundState));
+  };
+
+  // Функция для применения фона
+  const updateBackground = (useImage) => {
+    if (useImage) {
+      document.body.style.background = "url('/pigpig.png') no-repeat center center fixed";
+      document.body.style.backgroundSize = 'cover'; // Растягиваем изображение на весь экран
+    } else {
+      document.body.style.background = '#111010'; // Устанавливаем цвет фона
+    }
+  };
+
+  // Используем эффект, чтобы применить сохранённое состояние при загрузке
+  useEffect(() => {
+    const savedBackgroundState = JSON.parse(localStorage.getItem('isImageBackground'));
+    if (savedBackgroundState !== null) {
+      setIsImageBackground(savedBackgroundState);
+      updateBackground(savedBackgroundState);
+    }
+  }, []);
+
   return (
     <footer className="footer">
       <div className="footer-top">
@@ -12,12 +43,11 @@ const Footer = ({ onSignUpClick, onContactClick, onUserGuideClick }) => { // П�
 
         {/* Навигационные ссылки */}
         <nav className="footer-links">
-          <a href="#" onClick={onSignUpClick}>Get Started</a> {/* Открываем модальное окно регистрации */}
-          <a href="#" onClick={onContactClick}>Contact Us</a> {/* Открываем модальное окно контакта */}
-          <a href="#" onClick={onUserGuideClick}>User Guide</a> {/* Открываем модальное окно User Guide */}
+          <a href="#" onClick={onSignUpClick}>Get Started</a>
+          <a href="#" onClick={onContactClick}>Contact Us</a>
+          <a href="#" onClick={onUserGuideClick}>User Guide</a>
+          <a href="#" onClick={toggleBackground}>{isImageBackground ? 'Dark theme' : 'Light theme'}</a>
         </nav>
-
-        {/* Социальные иконки */}
       </div>
 
       <div className="footer-bottom">
