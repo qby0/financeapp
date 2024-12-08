@@ -1,7 +1,7 @@
 .hero {
     position: relative;
     height: 100vh; /* Высота секции - 100% от высоты экрана */
-    background-image: url('/public/Hero.png'); /* Путь к твоему изображению */
+    background-image: url('/public/Hero1.png'); /* Путь к твоему изображению */
     background-size: cover; /* Изображение заполняет весь блок и сохраняет пропорции */
     background-position: center top; /* Сдвигаем изображение к верхней части */
     background-repeat: no-repeat; /* Отключение повторения изображения */
