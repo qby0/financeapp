@@ -3,7 +3,7 @@ import { getDatabase, ref, set, get, child } from 'firebase/database';
 import { getAuth } from 'firebase/auth';
 
 // Конфігурація Firebase (взята з Firebase консоль)
-const firebaseConfig = {
+const firebaseConfig =  {
     apiKey: "AIzaSyDtgbKuAAPKtPeOz27vJcH0JqIPtbxH6G0",
     authDomain: "pennywise-50c4b.firebaseapp.com",
     databaseURL: "https://pennywise-50c4b-default-rtdb.europe-west1.firebasedatabase.app",
