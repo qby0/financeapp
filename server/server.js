@@ -9,7 +9,7 @@ const { getDatabase, ref, set } = require('firebase/database');
 const FormData = require('form-data');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-
+ 
 const firebaseConfig = {
     apiKey: "AIzaSyDtgbKuAAPKtPeOz27vJcH0JqIPtbxH6G0",
     authDomain: "pennywise-50c4b.firebaseapp.com",
